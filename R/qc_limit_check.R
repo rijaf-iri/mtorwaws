@@ -170,11 +170,12 @@ awsQCLimitCheck <- function(fileList, dirDAT, dirQC, qcLimPars){
         })
 
         qc <- lapply(qcout, "[[", "qc")
+        names(qc) <- nom
         inull <- sapply(qc, is.null)
         if(any(!inull)){
             qc <- qc[!inull]
-            qcout <- list(date = x$date, qc = qc)
-            saveRDS(qcout, file = file.path(dirQC, f))
+            qcO <- list(date = x$date, qc = qc)
+            saveRDS(qcO, file = file.path(dirQC, f))
         }
 
         data <- lapply(qcout, "[[", "data")
