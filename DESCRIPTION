@@ -1,0 +1,14 @@
+Package: mtorwaws
+Version: 2.0
+Title: Processing AWS data from Meteo Rwanda
+Description: Processing AWS data from Meteo Rwanda.
+Author: Rija Faniriantsoa <rijaf@iri.columbia.edu>
+Maintainer: Rija Faniriantsoa <rijaf@iri.columbia.com>
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+Date: 2020-07-01
+Imports: 
+    jsonlite,
+RoxygenNote: 7.1.1
