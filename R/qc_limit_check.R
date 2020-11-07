@@ -1,6 +1,4 @@
 
-Sys.setenv(TZ = "Africa/Kigali")
-
 #' Perform limit check.
 #'
 #' Perform quality control using limit check method at AWS time step.
@@ -22,6 +20,7 @@ qc_limit_check <- function(dirAWS, netAWS){
         dir.create(dirDATTS, showWarnings = FALSE, recursive = TRUE)
     logQC <- file.path(dirQCBE, paste0(netAWS, "_LOG.txt"))
 
+    Sys.setenv(TZ = "Africa/Kigali")
     timeNow <- Sys.time()
     awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
 
