@@ -56,6 +56,23 @@ qc_limit_check <- function(dirAWS, netAWS){
         }
         qcdata <- convertAWSList2DF(qcdata)
 
+        if(netAWS == "REMA"){
+            don <- qcdata$data
+            wnd <- c('FF', 'FFmax')
+            if(all(wnd %in% names(don))){
+                spd <- don[wnd]
+                don <- don[!names(don) %in% wnd]
+                don$FF <- cbind(spd$FF, spd$FFmax)
+            }
+
+            if('FFmax' %in% names(don)){
+                nom <- names(don)
+                nom[nom == "FFmax"] <- "FF"
+                names(don) <- nom
+            }
+            qcdata$data <- don
+        }
+
         if(!is.null(dataTS))
             qcdata <- combineAWS2DF(dataTS, qcdata)
 
@@ -116,6 +133,23 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
             next
         }
         qcdata <- convertAWSList2DF(qcdata)
+
+        if(netAWS == "REMA"){
+            don <- qcdata$data
+            wnd <- c('FF', 'FFmax')
+            if(all(wnd %in% names(don))){
+                spd <- don[wnd]
+                don <- don[!names(don) %in% wnd]
+                don$FF <- cbind(spd$FF, spd$FFmax)
+            }
+
+            if('FFmax' %in% names(don)){
+                nom <- names(don)
+                nom[nom == "FFmax"] <- "FF"
+                names(don) <- nom
+            }
+            qcdata$data <- don
+        }
 
         fileTS <- file.path(dirDATTS, paste0(aws, ".rds"))
         if(file.exists(fileTS)){
