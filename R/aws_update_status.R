@@ -10,7 +10,6 @@
 
 update_aws_status <- function(dirAWS){
     crds <- readCoordsAWS(dirAWS)
-    pars <- crds$PARS
     crds <- crds[, !names(crds) %in% "PARS"]
     ix <- is.na(crds$longitude) | is.na(crds$latitude)
     crds <- crds[!ix, , drop = FALSE]

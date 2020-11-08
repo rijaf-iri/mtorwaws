@@ -11,4 +11,5 @@ NeedsCompilation: no
 Date: 2020-07-01
 Imports: 
     jsonlite,
+    stringr,
 RoxygenNote: 7.1.1
