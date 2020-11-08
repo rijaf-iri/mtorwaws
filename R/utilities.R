@@ -62,3 +62,87 @@ index_min2min <- function(times, out_step){
 
     return(index)
 }
+
+split.date.by.day <- function(start_time, end_time, tz = "Africa/Kigali"){
+    start_time <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
+    daty1 <- paste0(substr(format(start_time, "%Y%m%d%H%M"), 1, 11), 0)
+    daty1 <- strptime(daty1, "%Y%m%d%H%M", tz = tz)
+    end_time <- strptime(end_time, "%Y-%m-%d %H:%M", tz = tz)
+    daty2 <- paste0(substr(format(end_time, "%Y%m%d%H%M"), 1, 11), 0)
+    daty2 <- strptime(daty2, "%Y%m%d%H%M", tz = tz)
+
+    datys <- seq(daty1, daty2, '10 min')
+
+    daty_d <- format(datys, "%Y%m%d")
+    index <- split(seq_along(daty_d), daty_d)
+    daty_s <- lapply(index, function(im){
+        x <- datys[im]
+        c(format(x[1], "%Y-%m-%d %H:%M"),
+          format(x[length(x)], "%Y-%m-%d %H:%M"))
+    })
+    # daty_s[[1]][1] <- paste(substr(daty_s[[1]][1], 1, 10), format(start_time, "%H:%M"))
+    # daty_s[[length(daty_s)]][2] <- paste(substr(daty_s[[length(daty_s)]][2], 1, 10),
+    #                                      format(end_time, "%H:%M"))
+
+    return(daty_s)
+}
+
+###################
+
+doparallel.cond <- function(condition,
+                            parll = list(dopar = TRUE,
+                                         detect.cores = FALSE,
+                                         nb.cores = 4)
+                           )
+{
+    c(condition = condition, parll)
+}
+
+cdtdoparallel <- function(condition, dopar = TRUE,
+                          detect.cores = FALSE, nb.cores = 4)
+{
+    okpar <- FALSE
+    if(dopar){
+        cores <- parallel::detectCores()
+        if(detect.cores){
+            nb.cores <- cores - 1
+            okpar <- if(nb.cores >= 2) TRUE else FALSE
+        }else{
+            okpar <- if(cores >= 2 && nb.cores >= 2) TRUE else FALSE
+        }
+    }
+
+    if(okpar & condition){
+        klust <- parallel::makeCluster(nb.cores)
+        doParallel::registerDoParallel(klust)
+        `%dofun%` <- foreach::`%dopar%`
+        closeklust <- TRUE
+    }else{
+        klust <- NULL
+        `%dofun%` <- foreach::`%do%`
+        closeklust <- FALSE
+    }
+
+    list(dofun = `%dofun%`, cluster = klust, parLL = closeklust)
+}
+
+utils::globalVariables(c('jloop'))
+
+cdtforeach <- function(loopL, parsL, ..., FUN){
+    FUN <- match.fun(FUN)
+    if(missing(parsL)) parsL <- list(condition = FALSE)
+    is.parallel <- do.call(cdtdoparallel, parsL)
+
+    if(is.parallel$parLL){
+        on.exit(parallel::stopCluster(is.parallel$cluster))
+        `%parLoop%` <- is.parallel$dofun
+        ret.loop <- foreach::foreach(jloop = loopL, ...) %parLoop% FUN(jloop)
+    }else{
+        ret.loop <- lapply(loopL, function(jloop){
+            ret <- FUN(jloop)
+            return(ret)
+        })
+    }
+
+    return(ret.loop)
+}
