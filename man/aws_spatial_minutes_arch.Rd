@@ -12,7 +12,7 @@ Example: "2019-12-15 12:50"}
 
 \item{end_time}{the end time to process in the format "YYYY-MM-DD HH:MM"}
 
-\item{dirAWS}{full path to the directory of the parsed data.
+\item{dirAWS}{full path to the directory of the AWS data.
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \description{

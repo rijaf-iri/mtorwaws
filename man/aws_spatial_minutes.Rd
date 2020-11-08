@@ -7,7 +7,7 @@
 aws_spatial_minutes(dirAWS)
 }
 \arguments{
-\item{dirAWS}{full path to the directory of the parsed data.
+\item{dirAWS}{full path to the directory of the AWS data.
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \description{

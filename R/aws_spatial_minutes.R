@@ -3,7 +3,7 @@
 #'
 #' Create 10 minutes spatial data.
 #' 
-#' @param dirAWS full path to the directory of the parsed data.
+#' @param dirAWS full path to the directory of the AWS data.
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export
@@ -19,7 +19,8 @@ aws_spatial_minutes <- function(dirAWS){
     daty2 <- paste0(substr(format(timeNow, "%Y%m%d%H%M"), 1, 11), 0)
     daty2 <- strptime(daty2, "%Y%m%d%H%M", tz = tz)
     ## operational last 6 hours
-    timeLast <- timeNow - 21600
+    # timeLast <- timeNow - 21600
+    timeLast <- timeNow - 86400
     daty1 <- paste0(substr(format(timeLast, "%Y%m%d%H%M"), 1, 11), 0)
     daty1 <- strptime(daty1, "%Y%m%d%H%M", tz = tz)
 
@@ -28,7 +29,7 @@ aws_spatial_minutes <- function(dirAWS){
     pathMin <- file.path(dirOUT, paste0(datyf, ".rds"))
     ifiles <- file.exists(pathMin)
     if(!any(ifiles)){
-        msg <- "No data"
+        msg <- "No data to update"
         format_out_msg(msg, logPROC)
         return(NULL)
     }
@@ -51,12 +52,11 @@ aws_spatial_minutes <- function(dirAWS){
 #' @param start_time the start time to process in the format "YYYY-MM-DD HH:MM".
 #'                  Example: "2019-12-15 12:50"
 #' @param end_time  the end time to process in the format "YYYY-MM-DD HH:MM"
-#' @param dirAWS full path to the directory of the parsed data.
+#' @param dirAWS full path to the directory of the AWS data.
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export
 
-## archive
 aws_spatial_minutes_arch <- function(start_time, end_time, dirAWS){
     tz <- "Africa/Kigali"
     daty_s <- split.date.by.day(start_time, end_time, tz)
@@ -66,7 +66,7 @@ aws_spatial_minutes_arch <- function(start_time, end_time, dirAWS){
     retLoop <- cdtforeach(seq_along(daty_s), parsL, FUN = function(jj){
         ret <- try(aws_spatial_10min(daty_s[[jj]][1],
                    daty_s[[jj]][2], dirAWS), silent = TRUE)
-        if(inherits(ret, "try-error")){ 
+        if(inherits(ret, "try-error")){
             msg <- paste(ret, "Unable to process data from",
                          daty_s[[jj]][1], "to", daty_s[[jj]][2])
             format_out_msg(msg, logPROC)
