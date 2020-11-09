@@ -10,6 +10,9 @@
 #' @export
 
 qc_limit_check <- function(dirAWS, netAWS){
+    tz <- "Africa/Kigali"
+    Sys.setenv(TZ = tz)
+
     limitFile <- file.path(dirAWS, "PARAMS", "QC_Limit_Check.json")
     qcLimPars <- jsonlite::read_json(limitFile)
 
@@ -20,7 +23,6 @@ qc_limit_check <- function(dirAWS, netAWS){
         dir.create(dirDATTS, showWarnings = FALSE, recursive = TRUE)
     logQC <- file.path(dirQCBE, paste0(netAWS, "_LOG.txt"))
 
-    Sys.setenv(TZ = "Africa/Kigali")
     timeNow <- Sys.time()
     awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
 
@@ -34,10 +36,10 @@ qc_limit_check <- function(dirAWS, netAWS){
         if(file.exists(fileTS)){
             dataTS <- readRDS(fileTS)
             timeLast <- dataTS$date[length(dataTS$date)]
-            timeLast <- strptime(timeLast, "%Y%m%d%H%M%S", tz = "Africa/Kigali")
+            timeLast <- strptime(timeLast, "%Y%m%d%H%M%S", tz = tz)
         }else{
             dataTS <- NULL
-            timeLast <- strptime("202010210000", "%Y%m%d%H%M", tz = "Africa/Kigali")
+            timeLast <- strptime("202010210000", "%Y%m%d%H%M", tz = tz)
         }
 
         seqTime <- seq(timeLast, timeNow, "10 min")
@@ -97,6 +99,8 @@ qc_limit_check <- function(dirAWS, netAWS){
 #' @export
 
 qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
+    tz <- "Africa/Kigali"
+
     limitFile <- file.path(dirAWS, "PARAMS", "QC_Limit_Check.json")
     qcLimPars <- jsonlite::read_json(limitFile)
 
@@ -107,8 +111,8 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
         dir.create(dirDATTS, showWarnings = FALSE, recursive = TRUE)
     logQC <- file.path(dirQCBE, paste0(netAWS, "_LOG.txt"))
 
-    time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = "Africa/Kigali")
-    time2 <- strptime(end_time, "%Y-%m-%d %H:%M", tz = "Africa/Kigali")
+    time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
+    time2 <- strptime(end_time, "%Y-%m-%d %H:%M", tz = tz)
     seqTime <- seq(time1, time2, "10 min")
     pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
     pattern <- paste0(pattern, ".+\\.rds$")

@@ -11,6 +11,7 @@
 #' @export
 
 aggregate2hourly <- function(dirAWS, netAWS, archive = FALSE){
+    tz <- "Africa/Kigali"
     mfracFile <- file.path(dirAWS, "PARAMS", "Min_Frac_Hourly.json")
     minFrac <- jsonlite::read_json(mfracFile)
 
@@ -29,8 +30,7 @@ aggregate2hourly <- function(dirAWS, netAWS, archive = FALSE){
      
         file_mn <- file.path(dirMin, aws)
         dat_mn <- readRDS(file_mn)
-        daty <- strptime(dat_mn$date, "%Y%m%d%H%M%S", tz = "Africa/Kigali")
-        fdaty <- format(daty, "%Y%m%d%H")
+        daty <- strptime(dat_mn$date, "%Y%m%d%H%M%S", tz = tz)
 
         file_hr <- file.path(dirHour, aws)
 
@@ -40,6 +40,7 @@ aggregate2hourly <- function(dirAWS, netAWS, archive = FALSE){
 
             if(archive){
                 ## archive
+                fdaty <- format(daty, "%Y%m%d%H")
                 idaty <- !fdaty %in%  dat_hr$date
                 ihr <- dat_hr$date %in% fdaty
                 dat_hr$date <- dat_hr$date[ihr]
@@ -47,7 +48,7 @@ aggregate2hourly <- function(dirAWS, netAWS, archive = FALSE){
             }else{
                 ## operational
                 timeLast <- dat_hr$date[nhr]
-                timeLast <- strptime(timeLast, "%Y%m%d%H", tz = "Africa/Kigali")
+                timeLast <- strptime(timeLast, "%Y%m%d%H", tz = tz)
                 dat_hr$date <- dat_hr$date[-nhr]
                 dat_hr$data <- lapply(dat_hr$data, function(x) x[-nhr, , drop = FALSE])
                 idaty <- daty >= timeLast
