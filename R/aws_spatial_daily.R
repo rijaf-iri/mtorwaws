@@ -1,90 +1,85 @@
 
-#' Create hourly spatial data.
+#' Create daily spatial data.
 #'
-#' Create hourly spatial data.
+#' Create daily spatial data.
 #' 
 #' @param dirAWS full path to the directory of the AWS data.
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export
 
-aws_spatial_hourly <- function(dirAWS){
-    tz <- "Africa/Kigali"
-    Sys.setenv(TZ = tz)
-
-    dirOUT <- file.path(dirAWS, "PROC", "SPATIAL", "Hourly")
-    logPROC <- file.path(dirAWS, "PROC", "SPATIAL", "processing_Hourly.txt")
+aws_spatial_daily <- function(dirAWS){
+    dirOUT <- file.path(dirAWS, "PROC", "SPATIAL", "Daily")
+    logPROC <- file.path(dirAWS, "PROC", "SPATIAL", "processing_Daily.txt")
 
     timeNow <- Sys.time()
-    daty2 <- strptime(format(timeNow, "%Y%m%d%H"), "%Y%m%d%H", tz = tz)
-    ## operational last 6 hours
-    timeLast <- timeNow - 21600
-    daty1 <- strptime(format(timeLast, "%Y%m%d%H"), "%Y%m%d%H", tz = tz)
+    daty2 <- as.Date(format(timeNow, "%Y%m%d"), "%Y%m%d")
+    ## operational last 5 days
+    daty1 <- daty2 - 5
 
-    datys <- seq(daty1, daty2, 'hour')
-    datyf <- format(datys, "%Y%m%d%H")
-    pathHr <- file.path(dirOUT, paste0(datyf, ".rds"))
-    ifiles <- file.exists(pathHr)
+    datys <- seq(daty1, daty2, 'day')
+    datyf <- format(datys, "%Y%m%d")
+    pathDay <- file.path(dirOUT, paste0(datyf, ".rds"))
+    ifiles <- file.exists(pathDay)
     if(!any(ifiles)){
         msg <- "No data to update"
         format_out_msg(msg, logPROC)
         return(NULL)
     }
 
-    start_time <- format(datys[rev(which(ifiles))[1]], "%Y-%m-%d %H:00")
-    end_time <- format(timeNow, "%Y-%m-%d %H:00")
+    start_date <- format(datys[rev(which(ifiles))[1]], "%Y-%m-%d")
+    end_date <- format(daty2, "%Y-%m-%d")
 
-    ret <- try(aws_spatial_hour(start_time, end_time, dirAWS), silent = TRUE)
+    ret <- try(aws_spatial_day(start_date, end_date, dirAWS), silent = TRUE)
     if(inherits(ret, "try-error")){ 
         msg <- paste(ret, "Unable to process data from",
-                     start_time, "to", end_time)
+                     start_date, "to", end_date)
         format_out_msg(msg, logPROC)
     }
 }
 
-#' Create hourly spatial data.
+#' Create daily spatial data.
 #'
-#' Create hourly spatial data archive mode.
+#' Create daily spatial data archive mode.
 #'
-#' @param start_time the start time to process in the format "YYYY-MM-DD HH:00".
-#'                  Example: "2019-12-15 12:00"
-#' @param end_time  the end time to process in the format "YYYY-MM-DD HH:00"
+#' @param start_date the start date to process in the format "YYYY-MM-DD".
+#'                  Example: "2019-12-15"
+#' @param end_date  the end date to process in the format "YYYY-MM-DD"
 #' @param dirAWS full path to the directory of the AWS data.
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export
 
-aws_spatial_hourly_arch <- function(start_time, end_time, dirAWS){
-    logPROC <- file.path(dirAWS, "PROC", "SPATIAL", "processing_Hourly.txt")
-    ret <- try(aws_spatial_hour(start_time, end_time, dirAWS), silent = TRUE)
+aws_spatial_daily_arch <- function(start_date, end_date, dirAWS){
+    logPROC <- file.path(dirAWS, "PROC", "SPATIAL", "processing_Daily.txt")
+    ret <- try(aws_spatial_day(start_date, end_date, dirAWS), silent = TRUE)
     if(inherits(ret, "try-error")){
         msg <- paste(ret, "Unable to process data from",
-                     start_time, "to", end_time)
+                     start_date, "to", end_date)
         format_out_msg(msg, logPROC)
     }
 }
 
-aws_spatial_hour <- function(start_time, end_time, dirAWS){
-    tz <- "Africa/Kigali"
-    time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
-    time2 <- strptime(end_time, "%Y-%m-%d %H:%M", tz = tz)
-    seqTime <- seq(time1, time2, "hour")
-    seqTime <- format(seqTime, "%Y%m%d%H")
+aws_spatial_day <- function(start_date, end_date, dirAWS){
+    time1 <- as.Date(start_date, "%Y-%m-%d")
+    time2 <- as.Date(end_date, "%Y-%m-%d")
+    seqTime <- seq(time1, time2, "day")
+    seqTime <- format(seqTime, "%Y%m%d")
 
     netAWS <- c("REMA", "LSI-ELOG", "LSI-XLOG")
 
-    dirHr <- file.path(dirAWS, "PROC", "TIMESERIES", "Hourly", netAWS)
-    dirOUT <- file.path(dirAWS, "PROC", "SPATIAL", "Hourly")
+    dirDay <- file.path(dirAWS, "PROC", "TIMESERIES", "Daily", netAWS)
+    dirOUT <- file.path(dirAWS, "PROC", "SPATIAL", "Daily")
     if(!dir.exists(dirOUT))
         dir.create(dirOUT, showWarnings = FALSE, recursive = TRUE)
 
-    dirTMP <- file.path(dirAWS, "PROC", "SPATIAL", "TMP")
+    dirTMP <- file.path(dirAWS, "PROC", "SPATIAL", "TMP1")
     if(!dir.exists(dirTMP))
         dir.create(dirTMP, showWarnings = FALSE, recursive = TRUE)
 
     crds <- readCoordsAWS(dirAWS)
 
-    awsPath <- list.files(dirHr, full.names = TRUE, recursive = FALSE)
+    awsPath <- list.files(dirDay, full.names = TRUE, recursive = FALSE)
     iaws <- gsub("\\.rds", "", basename(awsPath)) %in% crds$id
     awsPath <- awsPath[iaws]
     if(length(awsPath) == 0) return(NULL)
@@ -93,7 +88,7 @@ aws_spatial_hour <- function(start_time, end_time, dirAWS){
         dat <- try(readRDS(path), silent = TRUE)
         if(inherits(dat, "try-error")) next
 
-        daty <- strptime(dat$date, "%Y%m%d%H", tz = tz)
+        daty <- as.Date(dat$date, "%Y%m%d")
         index <- which(daty >= time1 & daty <= time2)
         if(length(index) == 0) next
         aws <- sub("\\.rds", "", basename(path))

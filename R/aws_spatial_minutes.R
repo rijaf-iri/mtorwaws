@@ -20,7 +20,6 @@ aws_spatial_minutes <- function(dirAWS){
     daty2 <- strptime(daty2, "%Y%m%d%H%M", tz = tz)
     ## operational last 6 hours
     timeLast <- timeNow - 21600
-    # timeLast <- timeNow - 86400
     daty1 <- paste0(substr(format(timeLast, "%Y%m%d%H%M"), 1, 11), 0)
     daty1 <- strptime(daty1, "%Y%m%d%H%M", tz = tz)
 
@@ -40,7 +39,7 @@ aws_spatial_minutes <- function(dirAWS){
     ret <- try(aws_spatial_10min(start_time, end_time, dirAWS), silent = TRUE)
     if(inherits(ret, "try-error")){ 
         msg <- paste(ret, "Unable to process data from",
-                     start_time, "to",end_time)
+                     start_time, "to", end_time)
         format_out_msg(msg, logPROC)
     }
 }
