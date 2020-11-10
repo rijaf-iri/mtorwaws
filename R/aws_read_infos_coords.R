@@ -7,7 +7,20 @@ parseInfoAWS <- function(dirAWS){
         info <- lapply(awsInfo, function(x){
             aws <- readRDS(file.path(dirINFO, x))
             aws$AWS <- net
-            aws
+            if(net == "REMA"){
+                wnd <- c('FF', 'FFmax')
+                if(all(wnd %in% names(aws$vars))){
+                    aws$vars$FF <- c("Ave", "Max")
+                    aws$vars <- aws$vars[!names(aws$vars) %in% 'FFmax']
+                }
+                if('FFmax' %in% names(aws$vars)){
+                    nom <- names(aws$vars)
+                    nom[nom == "FFmax"] <- "FF"
+                    names(aws$vars) <- nom
+                }
+            }
+
+            return(aws)
         })
         info
     })

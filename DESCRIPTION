@@ -14,4 +14,8 @@ Imports:
     stringr,
     doParallel,
     foreach,
+    RColorBrewer,
+    fields,
+    openair,
+    matrixStats,
 RoxygenNote: 7.1.1

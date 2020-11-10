@@ -1,5 +1,9 @@
 
-importFrom("utils", "read.table")
+importFrom("utils", "read.table", "write.table")
+importFrom("fields", "tim.colors")
+importFrom("graphics", ".filled.contour", "abline", "axTicks", "axis",
+           "box", "boxplot", "contour", "image", "layout", "mtext",
+           "par", "text")
 
 export(qc_limit_check)
 export(qc_limit_check_arch)
@@ -12,3 +16,35 @@ export(aws_spatial_hourly)
 export(aws_spatial_hourly_arch)
 export(aws_spatial_daily)
 export(aws_spatial_daily_arch)
+
+export(readCoords)
+export(readCoordsMap)
+export(readAWSWind)
+export(readAWSInfo)
+export(readAWSStatus)
+
+export(displayMAP10min)
+export(displayMAPAggr)
+
+export(chartMinAWSData)
+export(chartAggrAWSData)
+export(displayTableAgrrAWS)
+
+export(downAWSMinDataCSV)
+export(downTableAggrCSV)
+export(downAWSAggrOneVarCSV)
+export(downAWSAggrCDTDataCSV)
+export(downAWS10MinSpCSV)
+export(downAWSAggrSpCSV)
+
+export(dispWindBarb)
+export(dispWindRose)
+export(dispWindContours)
+export(downWindBarbCSV)
+export(donwWindFreqCSV)
+export(openairWindrose)
+
+export(chartRainAccumulAWS)
+export(displayMAPRainAccumul)
+export(downRainAccumulTS)
+export(downRainAccumulSP)
