@@ -1,4 +1,3 @@
-
 #' Get 10 minutes data.
 #'
 #' Get 10 minutes data for download.
