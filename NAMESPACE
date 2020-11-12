@@ -29,6 +29,8 @@ export(displayMAPAggr)
 export(chartMinAWSData)
 export(chartAggrAWSData)
 export(displayTableAgrrAWS)
+export(chartAggrAWSDataSel)
+export(displayTableAgrrDataSel)
 
 export(downAWSMinDataCSV)
 export(downTableAggrCSV)

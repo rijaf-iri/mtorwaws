@@ -22,12 +22,15 @@ chartMinAWSData <- function(aws, vars, pars, start, end,
     plotrange <- as.logical(as.integer(plotrange))
     coordAWS <- readCoordsAWS(aws_dir)
     coordAWS <- as.list(coordAWS[coordAWS$id == aws, ])
+    # aws_net <- coordAWS$AWSGroup
     naws <- paste(coordAWS$id, "-", coordAWS$stationName)
+    tstep <- coordAWS$timestep
+
+    ############
     npars <- if(plotrange) paste0(", Min-Ave-Max, ") else paste0(", ", pars, ", ")
     nvar <- variables.aws[variables.aws[, 1] %in% vars, 2]
     titre <- paste0(nvar, npars, naws)
     nplt <- paste(vars, pars, sep = "-")
-    tstep <- coordAWS$timestep
 
     OUT <- list(opts = list(title = titre, arearange = FALSE, status = 'no-data', name = 'none',
                 filename = gsub(" ", "", gsub(",", "_", titre))), data = NULL, var = vars)
@@ -130,7 +133,9 @@ chartAggrAWSData <- function(tstep, aws, vars, pars, start,
     plotrange <- as.logical(as.integer(plotrange))
     coordAWS <- readCoordsAWS(aws_dir)
     coordAWS <- as.list(coordAWS[coordAWS$id == aws, ])
+    # aws_net <- coordAWS$AWSGroup
     naws <- paste(coordAWS$id, "-", coordAWS$stationName)
+ 
     npars <- if(plotrange) paste0(", Min-Ave-Max, ") else paste0(", ", pars, ", ")
     nvar <- variables.aws[variables.aws[, 1] %in% vars, 2]
     titre <- paste0(nvar, npars, naws)
@@ -224,4 +229,148 @@ displayTableAgrrAWS <- function(tstep, aws, start, end, aws_net, aws_dir){
     }
 
     return(convJSON(don0))
+}
+
+##########
+#' Get aggregated data.
+#'
+#' Get aggregated data to display on chart for multiple AWS.
+#' 
+#' @param tstep time step.
+#' @param aws vector of AWS IDs.
+#' @param vars variables.
+#' @param pars parameters.
+#' @param start start time.
+#' @param end end time.
+#' @param aws_dir full path to the directory of the AWS data.
+#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
+#' 
+#' @return a JSON object
+#' 
+#' @export
+
+chartAggrAWSDataSel <- function(tstep, aws, vars, pars, start, end, aws_dir){
+    coordAWS <- readCoordsAWS(aws_dir)
+    iaws <- match(aws, coordAWS$id)
+    coordAWS <- as.list(coordAWS[iaws, , drop = FALSE])
+    aws_net <- coordAWS$AWSGroup
+    aws_name <- coordAWS$stationName
+    vnm <- paste0(vars, '.', pars)
+    varlab <- paste0(vars, '-', pars)
+
+    filename <- paste0(tstep, '_', vars, '-', pars)
+    varname <- variables.aws[variables.aws[, 1] %in% vars, 2]
+    parname <- switch(pars, "Ave" = "Average", "Tot" = "Total",
+                            "Min" = "Minimum", "Max" = "Maximum")
+    titre <- paste(varname, "-", parname)
+    opts <- list(filename = filename, status = "plot", title = titre)
+
+    kolor <- fields::tim.colors(length(aws))
+
+    don <- lapply(seq_along(aws), function(j){
+        dat <- filterAWS_AggrData(tstep, aws[j], start, end, aws_net[j], aws_dir)
+        if(is.null(dat)) return(NULL)
+
+        time <- 1000 * as.numeric(as.POSIXct(dat[["time"]]))
+        dat <- as.matrix(cbind(time, dat$data[[vnm]]))
+        dimnames(dat) <- NULL
+
+        list(name = paste(aws[j], '-', aws_name[j]),
+            color = kolor[j],
+            data = dat)
+    })
+
+    inull <- sapply(don, is.null)
+    if(all(inull)){
+        opts$status <- "no-data"
+        don <- NULL
+    }else{
+        don <- don[!inull]
+    }
+    out <- list(data = don, opts = opts, var = varlab)
+
+    return(convJSON(out))
+}
+
+##########
+#' Get aggregated data.
+#'
+#' Get aggregated data to display on table for multiple AWS.
+#' 
+#' @param tstep time step.
+#' @param aws vector of AWS IDs.
+#' @param vars variables.
+#' @param pars parameters.
+#' @param start start time.
+#' @param end end time.
+#' @param aws_dir full path to the directory of the AWS data.
+#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
+#' 
+#' @return a JSON object
+#' 
+#' @export
+
+displayTableAgrrDataSel <- function(tstep, aws, vars, pars, start, end, aws_dir){
+    coordAWS <- readCoordsAWS(aws_dir)
+    iaws <- match(aws, coordAWS$id)
+    coordAWS <- as.list(coordAWS[iaws, , drop = FALSE])
+    aws_net <- coordAWS$AWSGroup
+    vnm <- paste0(vars, '.', pars)
+    varname <- variables.aws[variables.aws[, 1] %in% vars, 2]
+    parname <- switch(pars, "Ave" = "Average", "Tot" = "Total",
+                            "Min" = "Minimum", "Max" = "Maximum")
+    titre <- paste(varname, "-", parname)
+
+    don <- lapply(seq_along(aws), function(j){
+        dat <- filterAWS_AggrData(tstep, aws[j], start, end, aws_net[j], aws_dir)
+        if(is.null(dat)) return(NULL)
+
+        list(date = dat[["date"]], data = dat$data[[vnm]])
+    })
+
+    inull <- sapply(don, is.null)
+    don0 <- data.frame(Date = NA, Status = "no.data")
+    if(!all(inull)){
+        don <- don[!inull]
+        aws <- aws[!inull]
+
+        daty <- don[[1]]$date
+        don <- do.call(cbind, lapply(don, '[[', 'data'))
+        ina <- colSums(!is.na(don)) > 0
+        if(any(ina)){
+            don0 <- data.frame(daty, don[, ina, drop = FALSE])
+            don0[is.na(don0)] <- -99
+            names(don0) <- c("Date", aws[ina])
+            rownames(don0) <- NULL
+        }
+    }
+    out <- list(data = don0, title = titre, order = names(don0))
+
+    return(convJSON(out))
+}
+
+#################
+
+chartMinAWSDataSel <- function(aws, vars, pars, start, end, aws_dir){
+    coordAWS <- readCoordsAWS(aws_dir)
+    iaws <- match(aws, coordAWS$id)
+    coordAWS <- as.list(coordAWS[iaws, , drop = FALSE])
+
+    dirAWS <- file.path(aws_dir, "PROC", "TIMESERIES", "Minutes")
+    fileAWS <- file.path(dirAWS, coordAWS$AWSGroup, paste0(aws, ".rds"))
+    don <- lapply(fileAWS, readRDS)
+
+    daty <- lapply(don, '[[', 'date')
+    don <- lapply(don, function(x) x[['data']][[vars]][[pars]])
+ 
+    daty <- lapply(daty, strptime, format = "%Y%m%d%H%M%S", tz = "Africa/Kigali")
+    start <- strptime(start, "%Y-%m-%d-%H-%M", tz = "Africa/Kigali")
+    end <- strptime(end, "%Y-%m-%d-%H-%M", tz = "Africa/Kigali")
+
+    index <- lapply(daty, function(ix) ix >= start & ix <= end)
+    dat <- lapply(seq_along(index), function(j){
+        list(date = daty[[j]][index[[j]]], data = don[[j]][index[[j]]])
+    })
+
+
 }

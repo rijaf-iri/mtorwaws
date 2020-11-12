@@ -77,6 +77,60 @@ downTableAggrCSV <- function(tstep, aws, start, end, aws_net, aws_dir){
 ##########
 #' Get aggregated data.
 #'
+#' Get aggregated data to download for multiple AWS.
+#' 
+#' @param tstep time step.
+#' @param aws vector of AWS IDs.
+#' @param vars variables.
+#' @param pars parameters.
+#' @param start start time.
+#' @param end end time.
+#' @param aws_dir full path to the directory of the AWS data.
+#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
+#' 
+#' @return CSV format object
+#' 
+#' @export
+
+downTableAggrDataSelCSV <- function(tstep, aws, vars, pars, start, end, aws_dir){
+    coordAWS <- readCoordsAWS(aws_dir)
+    iaws <- match(aws, coordAWS$id)
+    coordAWS <- as.list(coordAWS[iaws, , drop = FALSE])
+    aws_net <- coordAWS$AWSGroup
+    vnm <- paste0(vars, '.', pars)
+
+    don <- lapply(seq_along(aws), function(j){
+        dat <- filterAWS_AggrData(tstep, aws[j], start, end, aws_net[j], aws_dir)
+        if(is.null(dat)) return(NULL)
+
+        list(date = dat[["date"]], data = dat$data[[vnm]])
+    })
+
+    inull <- sapply(don, is.null)
+    don0 <- data.frame(Date = NA, Status = "no.data")
+    if(!all(inull)){
+        don <- don[!inull]
+        aws <- aws[!inull]
+
+        daty <- don[[1]]$date
+        don <- do.call(cbind, lapply(don, '[[', 'data'))
+        ina <- colSums(!is.na(don)) > 0
+        if(any(ina)){
+            don <- don[, ina, drop = FALSE]
+            aws <- aws[ina]
+            don0 <- data.frame(daty, don)
+            don0[is.na(don0)] <- -99
+            names(don0) <- c("Date", aws)
+            rownames(don0) <- NULL
+        }
+    }
+
+    return(convCSV(don0))
+}
+
+##########
+#' Get aggregated data.
+#'
 #' Get aggregated data displayed on the chart for download.
 #' 
 #' @param tstep time step.
