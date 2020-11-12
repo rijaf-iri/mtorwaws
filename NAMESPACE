@@ -50,3 +50,5 @@ export(chartRainAccumulAWS)
 export(displayMAPRainAccumul)
 export(downRainAccumulTS)
 export(downRainAccumulSP)
+
+export(displayQCMinutes)
