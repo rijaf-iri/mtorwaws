@@ -53,7 +53,6 @@ displayQCMinutes <- function(time, aws_dir){
     qcout <- lapply(seq_along(qcout), function(j){
         list(crd = coordAWS[j, ], qc = qcout[[j]])
     })
-    # names(qcout) <- coordAWS$id
 
     ret <- list(status = "ok", data = qcout)
 

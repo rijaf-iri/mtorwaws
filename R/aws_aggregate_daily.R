@@ -45,7 +45,6 @@ aggregate2daily <- function(dirAWS, netAWS, obs_hour = 8, archive = FALSE){
                 ## operational
                 timeLast <- dat_day$date[nday]
                 timeLast <- strptime(timeLast, "%Y%m%d", tz = tz)
-                timeLast <- as.Date(timeLast, "%Y%m%d")
                 dat_day$date <- dat_day$date[-nday]
                 dat_day$data <- lapply(dat_day$data, function(x) x[-nday, , drop = FALSE])
                 idaty <- daty >= timeLast
