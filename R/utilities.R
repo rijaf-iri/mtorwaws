@@ -325,3 +325,23 @@ format_Seq_Dates <- function(tstep, start, end){
 
     return(daty)
 }
+
+##############################################
+
+split_paths <- function(paths) {
+    pths <- strsplit(paths, "/|\\\\")
+    pths <- lapply(pths, setdiff, y = "")
+    pths <- lapply(pths, rev)
+
+    return(pths)
+}
+
+parse_aws_paths <- function(paths){
+    aws_files <- sapply(paths, '[[', 1)
+    aws_id <- sapply(paths, '[[', 2)
+    aws_net <- sapply(paths, '[[', 4)
+
+    data.frame(network = aws_net,
+               id = aws_id,
+               file = aws_files)
+}

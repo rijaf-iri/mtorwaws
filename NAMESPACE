@@ -53,5 +53,10 @@ export(downRainAccumulSP)
 
 export(displayQCMinutes)
 
-
 export(displayLogFiles)
+
+export(aws_data_availability_all)
+export(aws_data_availability_net)
+export(aws_data_availability_ids)
+export(aws_data_status_24hour)
+
