@@ -59,4 +59,9 @@ export(aws_data_availability_all)
 export(aws_data_availability_net)
 export(aws_data_availability_ids)
 export(aws_data_status_24hour)
+export(aws_check_variables_ids)
+export(aws_metadata)
+
+export(aws_data_aggregate_ids)
+export(aws_data_variables_ids)
 

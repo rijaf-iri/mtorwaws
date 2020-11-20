@@ -18,4 +18,5 @@ Imports:
     fields,
     openair,
     matrixStats,
+    gstat,
 RoxygenNote: 7.1.1
