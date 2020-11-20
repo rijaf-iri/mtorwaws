@@ -134,32 +134,19 @@ aws_data_availability_ids <- function(start_time, end_time, aws_ids, aws_dir){
     pattern <- seq(start, end + 3600, 'hour')
     pattern <- format(pattern, "%Y%m%d%H*.rds")
 
-    print('1*****************************************')
-    print(pattern)
-
     aws_net <- crds[crds$id %in% aws_ids, c('id', 'AWSGroup')]
     aws_paths <- file.path(aws_net$AWSGroup, 'DATA', aws_net$id)
     aws_paths <- sapply(aws_paths, function(x) file.path(x, pattern))
     pattern <- file.path(aws_dir, "RAW", aws_paths)
-
-    print('2*****************************************')
-    print(pattern)
-
     pattern <- paste('ls', pattern, '2>/dev/null')
 
     ret_paths <- suppressWarnings(lapply(pattern, system, intern = TRUE))
-
-    print('3*****************************************')
-    print(ret_paths)
 
     ret_paths <- lapply(ret_paths, split_paths)
     ret_paths <- lapply(ret_paths, parse_aws_paths)
     ret_paths <- do.call(rbind, ret_paths)
     if(nrow(ret_paths) == 0)
         return(convJSON(list(status = "no-data")))
-
-    print('4*****************************************')
-    print(ret_paths)
 
     aws_id <- unique(ret_paths$id)
     ret_paths$file <- gsub('\\.rds', '', ret_paths$file)
