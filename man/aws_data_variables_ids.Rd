@@ -7,9 +7,9 @@
 aws_data_variables_ids(start_time, end_time, variables, aws_ids, aws_dir)
 }
 \arguments{
-\item{start_time}{start time, format "YYYY-mm-dd HH:00"}
+\item{start_time}{start time, format "YYYY-mm-dd HH:MM"}
 
-\item{end_time}{end time, format "YYYY-mm-dd HH:00"}
+\item{end_time}{end time, format "YYYY-mm-dd HH:MM"}
 
 \item{variables}{a vector of aws variables. Ex: c('RR', 'TT')}
 

@@ -51,8 +51,8 @@ aws_data_aggregate_ids <- function(timestep, start_time, end_time, aws_ids, aws_
 #'
 #' Get AWS variables for a list of AWS.
 #' 
-#' @param start_time start time, format "YYYY-mm-dd HH:00"
-#' @param end_time end time, format "YYYY-mm-dd HH:00"
+#' @param start_time start time, format "YYYY-mm-dd HH:MM"
+#' @param end_time end time, format "YYYY-mm-dd HH:MM"
 #' @param variables a vector of aws variables. Ex: c('RR', 'TT')
 #' @param aws_ids aws ids, a vector of aws id
 #'                 Example: c("301", "306", "10050037", "000003")
