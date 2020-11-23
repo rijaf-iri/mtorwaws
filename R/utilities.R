@@ -105,6 +105,24 @@ split.date.by.day <- function(start_time, end_time, tz = "Africa/Kigali"){
     return(daty_s)
 }
 
+split.date.by.month <- function(start_min, end_min, tz = "Africa/Kigali"){
+    daty1 <- strptime(start_min, "%Y-%m-%d %H:%M", tz = tz)
+    daty2 <- strptime(end_min, "%Y-%m-%d %H:%M", tz = tz)
+    datys <- seq(daty1, daty2, 'day')
+    daty_m <- format(datys, "%Y%m")
+    daty_m <- split(seq_along(daty_m), daty_m)
+    nl <- length(daty_m)
+    daty_s <- lapply(seq_along(daty_m), function(j){
+        im <- daty_m[[j]]
+        x <- datys[im]
+        start_d <- if(j == 1) start_min else format(x[1], "%Y-%m-%d 00:00")
+        end_d <- if(j == nl) end_min else format(x[length(x)], "%Y-%m-%d 23:59")
+        c(start_d, end_d)
+    })
+
+    return(daty_s)
+}
+
 ###################
 
 doparallel.cond <- function(condition,
