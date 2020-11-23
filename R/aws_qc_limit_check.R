@@ -128,7 +128,8 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
         seqTime <- seq(time1, time2, "day")
         pattern <- format(seqTime, "%Y%m%d")
     }
-    pattern <- paste0(pattern, ".+\\.rds$")
+    # pattern <- paste0(pattern, ".+\\.rds$")
+    pattern <- paste0(pattern, "*")
 
     awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
 
@@ -138,10 +139,16 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
         if(!dir.exists(dirQC))
             dir.create(dirQC, showWarnings = FALSE, recursive = TRUE)
 
-        fileList <- lapply(pattern, function(p) list.files(dirDAT, p))
-        fileList <- do.call(c, fileList)
+        pattern_aws <- file.path(dirDAT, pattern)
+        pattern_aws <- paste('ls -f', pattern_aws, '2>/dev/null')
 
+        # fileList <- lapply(pattern, function(p) list.files(dirDAT, p))
+        # fileList <- do.call(c, fileList)
+        # if(length(fileList) == 0) next
+        fileList <- suppressWarnings(lapply(pattern_aws, system, intern = TRUE))
+        fileList <- do.call(c, fileList)
         if(length(fileList) == 0) next
+        fileList <- basename(fileList)
 
         qcdata <- try(awsQCLimitCheck(fileList, dirDAT, dirQC, qcLimPars), silent = TRUE)
         if(inherits(qcdata, "try-error")){ 
