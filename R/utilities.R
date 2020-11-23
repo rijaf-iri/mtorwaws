@@ -101,9 +101,6 @@ split.date.by.day <- function(start_time, end_time, tz = "Africa/Kigali"){
         c(format(x[1], "%Y-%m-%d %H:%M"),
           format(x[length(x)], "%Y-%m-%d %H:%M"))
     })
-    # daty_s[[1]][1] <- paste(substr(daty_s[[1]][1], 1, 10), format(start_time, "%H:%M"))
-    # daty_s[[length(daty_s)]][2] <- paste(substr(daty_s[[length(daty_s)]][2], 1, 10),
-    #                                      format(end_time, "%H:%M"))
 
     return(daty_s)
 }
