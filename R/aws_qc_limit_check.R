@@ -113,8 +113,21 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
 
     time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
     time2 <- strptime(end_time, "%Y-%m-%d %H:%M", tz = tz)
-    seqTime <- seq(time1, time2, "10 min")
-    pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
+    deltaT <- difftime(time2, time1, tz, units = "days")
+
+    if(deltaT <= 0.083){
+        ## minutes
+        seqTime <- seq(time1, time2, "10 min")
+        pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
+    }else if(deltaT < 2){
+        ## hourly
+        seqTime <- seq(time1, time2, "hour")
+        pattern <- format(seqTime, "%Y%m%d%H")
+    }else{
+        ## daily
+        seqTime <- seq(time1, time2, "day")
+        pattern <- format(seqTime, "%Y%m%d")
+    }
     pattern <- paste0(pattern, ".+\\.rds$")
 
     awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
