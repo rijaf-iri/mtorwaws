@@ -46,7 +46,9 @@ rbindListDF <- function(dat){
     don <- list()
     for(ii in NOM){
         vrs <- lapply(dat, '[[', ii)
-
+        # todo check null in vrs : 
+        # cas LSI-XLOG, aws "000001"
+        # "2018-12-01 00:00" to "2018-12-31 23:59" 
         nom0 <- lapply(vrs, names)
         nom <- nom0[[1]]
         for(j in 1:length(nom0)){
@@ -62,8 +64,10 @@ rbindListDF <- function(dat){
             }
 
             ## duplicate names
-            x <- x[, nom, drop = FALSE]
-            names(x) <- nom
+            if(any(duplicated(names(x)))){
+                x <- x[, nom, drop = FALSE]
+                names(x) <- nom
+            }
 
             return(x)
         })
