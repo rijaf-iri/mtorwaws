@@ -20,18 +20,51 @@ convCSV <- function(obj, col.names = TRUE){
     return(don)
 }
 
+# rbindListDF <- function(dat){
+#     NOM <- unique(do.call(c, lapply(dat, names)))
+#     don <- list()
+#     for(ii in NOM){
+#         vrs <- lapply(dat, '[[', ii)
+#         nom <- unique(do.call(c, lapply(vrs, names)))
+
+#         vrs <- lapply(vrs, function(x){
+#             ix <- !nom %in% names(x)
+#             if(any(ix)){
+#                 for(nm in nom[ix]) x[[nm]] <- NA
+#             }
+#             return(x)
+#         })
+
+#         don[[ii]] <- do.call(rbind, vrs)
+#     }
+
+#     return(don)
+# }
+
 rbindListDF <- function(dat){
     NOM <- unique(do.call(c, lapply(dat, names)))
     don <- list()
     for(ii in NOM){
         vrs <- lapply(dat, '[[', ii)
-        nom <- unique(do.call(c, lapply(vrs, names)))
+
+        nom0 <- lapply(vrs, names)
+        nom <- nom0[[1]]
+        for(j in 1:length(nom0)){
+            im <- !nom0[[j]] %in% nom
+            if(any(im))
+                nom <- c(nom, nom0[[j]][im])
+        }
 
         vrs <- lapply(vrs, function(x){
             ix <- !nom %in% names(x)
             if(any(ix)){
                 for(nm in nom[ix]) x[[nm]] <- NA
             }
+
+            ## duplicate names
+            x <- x[, nom, drop = FALSE]
+            names(x) <- nom
+
             return(x)
         })
 
