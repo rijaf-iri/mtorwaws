@@ -42,13 +42,23 @@ qc_limit_check <- function(dirAWS, netAWS){
             timeLast <- strptime("202010210000", "%Y%m%d%H%M", tz = tz)
         }
 
+        # seqTime <- seq(timeLast, timeNow, "10 min")
+        # pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
+        # pattern <- paste0(pattern, ".+\\.rds$")
+        # fileList <- lapply(pattern, function(p) list.files(dirDAT, p))
+        # fileList <- do.call(c, fileList)
+        # if(length(fileList) == 0) next
+
         seqTime <- seq(timeLast, timeNow, "10 min")
         pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
-        pattern <- paste0(pattern, ".+\\.rds$")
-        fileList <- lapply(pattern, function(p) list.files(dirDAT, p))
+        pattern <- format(seqTime, "%Y%m%d%H")
+        pattern <- paste0(pattern, "*")
+        pattern_aws <- file.path(dirDAT, pattern)
+        pattern_aws <- paste('ls -f', pattern_aws, '2>/dev/null')
+        fileList <- suppressWarnings(lapply(pattern_aws, system, intern = TRUE))
         fileList <- do.call(c, fileList)
-
         if(length(fileList) == 0) next
+        fileList <- basename(fileList)
 
         qcdata <- try(awsQCLimitCheck(fileList, dirDAT, dirQC, qcLimPars), silent = TRUE)
         if(inherits(qcdata, "try-error")){ 
