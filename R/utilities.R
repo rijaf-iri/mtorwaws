@@ -43,7 +43,7 @@ rbindListDF <- function(dat){
 
 convertAWSList2DF <- function(don){
     nl <- length(don)
-    if(nl == 1) return(don)
+    if(nl == 1) return(don[[1]])
 
     daty <- lapply(don, "[[", "date")
     daty <- do.call(c, daty)
