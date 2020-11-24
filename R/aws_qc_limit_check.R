@@ -51,7 +51,7 @@ qc_limit_check <- function(dirAWS, netAWS){
 
         seqTime <- seq(timeLast, timeNow, "10 min")
         pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
-        pattern <- format(seqTime, "%Y%m%d%H")
+        pattern <- unique(pattern)
         pattern <- paste0(pattern, "*")
         pattern_aws <- file.path(dirDAT, pattern)
         pattern_aws <- paste('ls -f', pattern_aws, '2>/dev/null')
