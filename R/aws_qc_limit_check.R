@@ -42,6 +42,13 @@ qc_limit_check <- function(dirAWS, netAWS){
             timeLast <- strptime("202010210000", "%Y%m%d%H%M", tz = tz)
         }
 
+        seqTime <- seq(timeLast, timeNow, "min")
+        pattern <- format(seqTime, "%Y%m%d%H%M%S.rds")
+        pattern_aws <- file.path(dirDAT, pattern)
+        ifiles <- file.exists(pattern_aws)
+        if(!any(ifiles)) next
+        fileList <- pattern[ifiles]
+
         # seqTime <- seq(timeLast, timeNow, "10 min")
         # pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
         # pattern <- paste0(pattern, ".+\\.rds$")
@@ -49,16 +56,16 @@ qc_limit_check <- function(dirAWS, netAWS){
         # fileList <- do.call(c, fileList)
         # if(length(fileList) == 0) next
 
-        seqTime <- seq(timeLast, timeNow, "10 min")
-        pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
-        pattern <- unique(pattern)
-        pattern <- paste0(pattern, "*")
-        pattern_aws <- file.path(dirDAT, pattern)
-        pattern_aws <- paste('ls -f', pattern_aws, '2>/dev/null')
-        fileList <- suppressWarnings(lapply(pattern_aws, system, intern = TRUE))
-        fileList <- do.call(c, fileList)
-        if(length(fileList) == 0) next
-        fileList <- basename(fileList)
+        # seqTime <- seq(timeLast, timeNow, "10 min")
+        # pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
+        # pattern <- unique(pattern)
+        # pattern <- paste0(pattern, "*")
+        # pattern_aws <- file.path(dirDAT, pattern)
+        # pattern_aws <- paste('ls -f', pattern_aws, '2>/dev/null')
+        # fileList <- suppressWarnings(lapply(pattern_aws, system, intern = TRUE))
+        # fileList <- do.call(c, fileList)
+        # if(length(fileList) == 0) next
+        # fileList <- basename(fileList)
 
         qcdata <- try(awsQCLimitCheck(fileList, dirDAT, dirQC, qcLimPars), silent = TRUE)
         if(inherits(qcdata, "try-error")){ 
@@ -123,23 +130,14 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
 
     time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
     time2 <- strptime(end_time, "%Y-%m-%d %H:%M", tz = tz)
-    deltaT <- difftime(time2, time1, tz, units = "days")
 
-    if(deltaT <= 0.083){
-        ## minutes
-        seqTime <- seq(time1, time2, "10 min")
-        pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
-    }else if(deltaT < 2){
-        ## hourly
-        seqTime <- seq(time1, time2, "hour")
-        pattern <- format(seqTime, "%Y%m%d%H")
-    }else{
-        ## daily
-        seqTime <- seq(time1, time2, "day")
-        pattern <- format(seqTime, "%Y%m%d")
-    }
-    # pattern <- paste0(pattern, ".+\\.rds$")
-    pattern <- paste0(pattern, "*")
+    # steps <- switch(netAWS,
+    #                 "REMA" = "5 min",
+    #                 "LSI-XLOG" = "5 min",
+    #                 "LSI-ELOG" = "min")
+    # seqTime <- seq(time1, time2, steps)
+    seqTime <- seq(time1, time2, "min")
+    pattern <- format(seqTime, "%Y%m%d%H%M%S.rds")
 
     awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
 
@@ -149,16 +147,17 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
         if(!dir.exists(dirQC))
             dir.create(dirQC, showWarnings = FALSE, recursive = TRUE)
 
-        pattern_aws <- file.path(dirDAT, pattern)
-        pattern_aws <- paste('ls -f', pattern_aws, '2>/dev/null')
+        fileTS <- file.path(dirDATTS, paste0(aws, ".rds"))
+        oldDATA <- FALSE
+        if(file.exists(fileTS)){
+            dataTS <- readRDS(fileTS)
+            oldDATA <- TRUE
+        }
 
-        # fileList <- lapply(pattern, function(p) list.files(dirDAT, p))
-        # fileList <- do.call(c, fileList)
-        # if(length(fileList) == 0) next
-        fileList <- suppressWarnings(lapply(pattern_aws, system, intern = TRUE))
-        fileList <- do.call(c, fileList)
-        if(length(fileList) == 0) next
-        fileList <- basename(fileList)
+        pattern_aws <- file.path(dirDAT, pattern)
+        ifiles <- file.exists(pattern_aws)
+        if(!any(ifiles)) next
+        fileList <- pattern[ifiles]
 
         qcdata <- try(awsQCLimitCheck(fileList, dirDAT, dirQC, qcLimPars), silent = TRUE)
         if(inherits(qcdata, "try-error")){ 
@@ -185,11 +184,8 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
             qcdata$data <- don
         }
 
-        fileTS <- file.path(dirDATTS, paste0(aws, ".rds"))
-        if(file.exists(fileTS)){
-            dataTS <- readRDS(fileTS)
+        if(oldDATA)
             qcdata <- combineAWS2DF(dataTS, qcdata)
-        }
 
         con <- gzfile(fileTS, compression = 9)
         open(con, "wb")
