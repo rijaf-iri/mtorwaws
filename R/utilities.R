@@ -56,7 +56,7 @@ rbindListDF <- function(dat){
         }
 
         vrs <- lapply(vrs, function(x){
-            if(is.null(x)) return(NULL)
+            if(is.null(x)) return(NA)
 
             ix <- !nom %in% names(x)
             if(any(ix)){
