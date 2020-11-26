@@ -73,25 +73,26 @@ aws_spatial_day <- function(start_date, end_date, dirAWS){
     if(!dir.exists(dirOUT))
         dir.create(dirOUT, showWarnings = FALSE, recursive = TRUE)
 
-    dirTMP <- file.path(dirAWS, "PROC", "SPATIAL", "TMP1")
+    dirTMP <- file.path(dirAWS, "PROC", "SPATIAL", "TMP2")
     if(!dir.exists(dirTMP))
         dir.create(dirTMP, showWarnings = FALSE, recursive = TRUE)
 
     crds <- readCoordsAWS(dirAWS)
 
-    awsPath <- list.files(dirDay, full.names = TRUE, recursive = FALSE)
-    iaws <- gsub("\\.rds", "", basename(awsPath)) %in% crds$id
+    awsPath <- list.files(dirDay, ".+\\.rds$", full.names = TRUE, recursive = FALSE)
+    awsID <- gsub("\\.rds", "", basename(awsPath))
+    iaws <- awsID %in% crds$id
+    if(!any(iaws)) return(NULL)
     awsPath <- awsPath[iaws]
-    if(length(awsPath) == 0) return(NULL)
+    awsID <- awsID[iaws]
 
-    for(path in awsPath){
-        dat <- try(readRDS(path), silent = TRUE)
+    for(jj in seq_along(awsPath)){
+        dat <- try(readRDS(awsPath[jj]), silent = TRUE)
         if(inherits(dat, "try-error")) next
 
         daty <- as.Date(dat$date, "%Y%m%d")
         index <- which(daty >= time1 & daty <= time2)
         if(length(index) == 0) next
-        aws <- sub("\\.rds", "", basename(path))
 
         for(ix in index){
             y <- lapply(dat$data, function(x) x[ix, , drop = FALSE])
@@ -104,26 +105,21 @@ aws_spatial_day <- function(start_date, end_date, dirAWS){
             inull <- sapply(y, is.null)
             if(all(inull)) next
             y <- y[!inull]
-            fltmp <- file.path(dirTMP, paste0(dat$date[ix], '_', aws))
+            fltmp <- file.path(dirTMP, paste0(dat$date[ix], '_', awsID[jj]))
             saveRDS(y, file = fltmp)
         }
     }
 
     for(tt in seqTime){
-        pattern <- paste0(tt, "_*")
-        awsList <- list.files(dirTMP, paste0(tt, "_*"))
-        if(length(awsList) == 0) next
+        awsList <- file.path(dirTMP, paste0(tt, '_', awsID))
+        ifiles <- file.exists(awsList)
+        if(!any(ifiles)) return(NULL)
+        awsList <- awsList[ifiles]
+        awsIds <- awsID[ifiles]
 
-        awsList <- lapply(strsplit(awsList, "_"), "[[", 2)
-        awsList <- do.call(c, awsList)
-
-        awsSP <- lapply(awsList, function(aws){
-            flaws <- file.path(dirTMP, paste0(tt, "_", aws))
-            readRDS(flaws)
-        })
-
-        names(awsSP) <- awsList
-        out <- list(date = tt, id = awsList, data = awsSP)
+        awsSP <- lapply(awsList, readRDS)
+        names(awsSP) <- awsIds
+        out <- list(date = tt, id = awsIds, data = awsSP)
         saveRDS(out, file = file.path(dirOUT, paste0(tt, ".rds")))
     }
 

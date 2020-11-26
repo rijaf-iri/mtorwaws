@@ -18,8 +18,8 @@ aws_spatial_minutes <- function(dirAWS){
     timeNow <- Sys.time()
     daty2 <- paste0(substr(format(timeNow, "%Y%m%d%H%M"), 1, 11), 0)
     daty2 <- strptime(daty2, "%Y%m%d%H%M", tz = tz)
-    ## operational last 6 hours
-    timeLast <- timeNow - 21600
+    ## operational last 24 hours
+    timeLast <- timeNow - 86400
     daty1 <- paste0(substr(format(timeLast, "%Y%m%d%H%M"), 1, 11), 0)
     daty1 <- strptime(daty1, "%Y%m%d%H%M", tz = tz)
 
@@ -57,107 +57,62 @@ aws_spatial_minutes <- function(dirAWS){
 #' @export
 
 aws_spatial_minutes_arch <- function(start_time, end_time, dirAWS){
-    tz <- "Africa/Kigali"
-    daty_s <- split.date.by.day(start_time, end_time, tz)
     logPROC <- file.path(dirAWS, "PROC", "SPATIAL", "processing_Minutes.txt")
 
-    parsL <- doparallel.cond(length(daty_s) > 4)
-    retLoop <- cdtforeach(seq_along(daty_s), parsL, FUN = function(jj){
-        ret <- try(aws_spatial_10min(daty_s[[jj]][1],
-                   daty_s[[jj]][2], dirAWS), silent = TRUE)
-        if(inherits(ret, "try-error")){
-            msg <- paste(ret, "Unable to process data from",
-                         daty_s[[jj]][1], "to", daty_s[[jj]][2])
-            format_out_msg(msg, logPROC)
-        }
-    })
+    ret <- try(aws_spatial_10min(start_time, end_time, dirAWS), silent = TRUE)
+    if(inherits(ret, "try-error")){
+        msg <- paste(ret, "Unable to process data from",
+                     start_time, "to", end_time)
+        format_out_msg(msg, logPROC)
+    }
 }
+
+#####################
 
 aws_spatial_10min <- function(start_time, end_time, dirAWS){
     tz <- "Africa/Kigali"
     time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
     time2 <- strptime(end_time, "%Y-%m-%d %H:%M", tz = tz)
     seqTime <- seq(time1, time2, "10 min")
-    pattern <- substr(format(seqTime, "%Y%m%d%H%M"), 1, 11)
-    pattern <- paste0(pattern, ".+\\.rds$")
+    seqTime <- format(seqTime, "%Y%m%d%H%M")
 
     netAWS <- c("REMA", "LSI-ELOG", "LSI-XLOG")
 
-    dirQC <- file.path(dirAWS, "PROC", "QCOUT", "QC1")
-    dirMin <- file.path(dirAWS, "RAW", netAWS, "DATA")
+    dirMin <- file.path(dirAWS, "PROC", "TIMESERIES", "Minutes", netAWS)
     dirOUT <- file.path(dirAWS, "PROC", "SPATIAL", "Minutes")
     if(!dir.exists(dirOUT))
         dir.create(dirOUT, showWarnings = FALSE, recursive = TRUE)
 
+    dirTMP <- file.path(dirAWS, "PROC", "SPATIAL", "TMP0")
+    if(!dir.exists(dirTMP))
+        dir.create(dirTMP, showWarnings = FALSE, recursive = TRUE)
+
     crds <- readCoordsAWS(dirAWS)
 
-    awsPath <- list.dirs(dirMin, full.names = TRUE, recursive = FALSE)
-    iaws <- basename(awsPath) %in% crds$id
+    awsPath <- list.files(dirMin, ".+\\.rds$", full.names = TRUE, recursive = FALSE)
+    awsID <- gsub("\\.rds", "", basename(awsPath))
+    iaws <- awsID %in% crds$id
+    if(!any(iaws)) return(NULL)
     awsPath <- awsPath[iaws]
+    awsID <- awsID[iaws]
 
-    awsIndex <- lapply(awsPath, function(path){
-        fileList <- lapply(pattern, function(p) list.files(path, p))
-        fileList <- do.call(c, fileList)
-        if(length(fileList) == 0)
-            return(NULL)
-        awsTime <- substr(fileList, 1, 14)
-        idx <- index_min2min(awsTime, 10)
+    parsL <- doparallel.cond(length(awsPath) > 20)
+    retLoop <- cdtforeach(seq_along(awsPath), parsL, FUN = function(jj){
+        dat <- try(readRDS(awsPath[jj]), silent = TRUE)
+        if(inherits(dat, "try-error")) return(NULL)
 
-        lapply(idx, function(i) fileList[i])
-    })
+        daty <- strptime(dat$date, "%Y%m%d%H%M%S", tz = tz)
+        idaty <- daty >= time1 & daty <= time2
+        if(!any(idaty)) return(NULL)
 
-    inull <- sapply(awsIndex, is.null)
-    if(all(inull)) return(NULL)
+        index <- index_min2min(dat$date[idaty], 10)
 
-    awsIndex <- awsIndex[!inull]
-    awsPath <- awsPath[!inull]
-    awsList <- basename(awsPath)
-
-    daty <- lapply(awsIndex, names)
-    daty <- unique(do.call(c, daty))
-
-    for(tt in daty){
-        timeList <- lapply(awsIndex, '[[', tt)
-
-        inull <- sapply(timeList, is.null)
-        if(all(inull)) next
-
-        timeList <- timeList[!inull]
-        awsPath <- awsPath[!inull]
-        awsList <- awsList[!inull]
-
-        awsSP <- lapply(seq_along(timeList), function(j){
-            fl <- timeList[[j]]
-            path <- awsPath[j]
-            aws <- awsList[j]
-            net <- basename(dirname(dirname(path)))
-            pqc <- file.path(dirQC, net, aws)
-
-            dat <- lapply(seq_along(fl), function(i){
-                fl_dt <- file.path(path, fl[i])
-                if(!file.exists(fl_dt)) return(NULL)
-                x <- try(readRDS(fl_dt), silent = TRUE)
-                if(inherits(x, "try-error")) return(NULL)
-
-                x <- x$data
-                fqc <- file.path(pqc, fl[i])
-
-                if(file.exists(fqc)){
-                    qc <- readRDS(fqc)
-                    qc <- qc$qc
-                    for(n in names(qc))
-                        x[[n]][names(qc[[n]])] <- NA
-                }
-
-                return(x)
-            })
-
-            inull <- sapply(dat, is.null)
-            if(all(inull)) return(NULL)
-            dat <- rbindListDF(dat[!inull])
-
-            if(nrow(dat[[1]]) > 1){
-                dat <- lapply(dat, function(x){
+        for(ii in seq_along(index)){
+            y <- lapply(dat$data, function(x){
+                x <- x[idaty, , drop = FALSE]
+                ix <- index[[ii]]
+                x <- x[ix, , drop = FALSE]
+                if(length(ix) > 1){
                     nx <- names(x)
                     res <- lapply(nx, function(n){
                         foo <- switch(n, 'Tot' = sum, 'Min' = min,
@@ -168,46 +123,39 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
                     })
                     names(res) <- nx
 
-                    do.call(cbind.data.frame, res)
-                })
-            }
-
-            if(net == "REMA"){
-                wnd <- c('FF', 'FFmax')
-                if(all(wnd %in% names(dat))){
-                    spd <- dat[wnd]
-                    dat <- dat[!names(dat) %in% wnd]
-                    dat$FF <- cbind(spd$FF, spd$FFmax)
+                    x <- do.call(cbind.data.frame, res)
                 }
 
-                if('FFmax' %in% names(dat)){
-                    nom <- names(dat)
-                    nom[nom == "FFmax"] <- "FF"
-                    names(dat) <- nom
-                }
-            }
+                return(x)
+            })
 
-            dat <- lapply(dat, function(x){
+            y <- lapply(y, function(x){
                 x <- x[, !is.na(x), drop = FALSE]
                 if(ncol(x) == 0) return(NULL)
                 as.list(x)
             })
 
-            inull <- sapply(dat, is.null)
-            if(all(inull)) return(NULL)
+            inull <- sapply(y, is.null)
+            if(all(inull)) next
+            y <- y[!inull]
+            fltmp <- file.path(dirTMP, paste0(names(index[ii]), '_', awsID[jj]))
+            saveRDS(y, file = fltmp)
+        }
+    })
 
-            return(dat[!inull])
-        })
+    parsL <- doparallel.cond(length(seqTime) > 200)
+    retLoop <- cdtforeach(seq_along(seqTime), parsL, FUN = function(tt){
+        awsList <- file.path(dirTMP, paste0(tt, '_', awsID))
+        ifiles <- file.exists(awsList)
+        if(!any(ifiles)) return(NULL)
+        awsList <- awsList[ifiles]
+        awsIds <- awsID[ifiles]
 
-        inull <- sapply(awsSP, is.null)
-        if(all(inull)) next
-
-        awsSP <- awsSP[!inull]
-        awsList <- awsList[!inull]
-
-        names(awsSP) <- awsList
-        out <- list(date = tt, id = awsList, data = awsSP)
-
+        awsSP <- lapply(awsList, readRDS)
+        names(awsSP) <- awsIds
+        out <- list(date = tt, id = awsIds, data = awsSP)
         saveRDS(out, file = file.path(dirOUT, paste0(tt, ".rds")))
-    }
+    })
+
+    unlink(dirTMP, recursive = TRUE)
 }
