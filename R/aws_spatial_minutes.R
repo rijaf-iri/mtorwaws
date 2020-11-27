@@ -100,9 +100,8 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
     awsPath <- awsPath[101:152]
     awsID <- awsID[101:152]
 
-    # parsL <- doparallel.cond(length(awsPath) > 20)
-    # retLoop <- cdtforeach(seq_along(awsPath), parsL, FUN = function(jj){
-    retLoop <- lapply(seq_along(awsPath), function(jj){
+    parsL <- doparallel.cond(length(awsPath) > 20)
+    retLoop <- cdtforeach(seq_along(awsPath), parsL, FUN = function(jj){
         dat <- try(readRDS(awsPath[jj]), silent = TRUE)
         if(inherits(dat, "try-error")) return(NULL)
 
@@ -112,10 +111,7 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
 
         index <- index_min2min(dat$date[idaty], 10)
 
-        # for(ii in seq_along(index)){
-        parsL <- doparallel.cond(seq_along(index) > 500)
-        ret <- cdtforeach(seq_along(index), parsL, FUN = function(ii){
-
+        for(ii in seq_along(index)){
             y <- lapply(dat$data, function(x){
                 x <- x[idaty, , drop = FALSE]
                 ix <- index[[ii]]
@@ -148,9 +144,7 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
             y <- y[!inull]
             fltmp <- file.path(dirTMP, paste0(names(index[ii]), '_', awsID[jj]))
             saveRDS(y, file = fltmp)
-        })
-        # }
-        cat(paste("done:", awsID[jj], "\n"))
+        }
     })
 
     # parsL <- doparallel.cond(length(seqTime) > 200)
