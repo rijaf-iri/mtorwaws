@@ -97,8 +97,8 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
     awsID <- awsID[iaws]
 
     #########
-    awsPath <- awsPath[101:152]
-    awsID <- awsID[101:152]
+    awsPath <- awsPath[110:152]
+    awsID <- awsID[110:152]
 
     parsL <- doparallel.cond(length(awsPath) > 20)
     retLoop <- cdtforeach(seq_along(awsPath), parsL, FUN = function(jj){
