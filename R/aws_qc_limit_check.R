@@ -139,7 +139,8 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
     seqTime <- seq(time1, time2, "min")
     pattern <- format(seqTime, "%Y%m%d%H%M%S.rds")
 
-    awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
+    # awsList <- list.dirs(dirDATBE, full.names = FALSE, recursive = FALSE)
+    awsList <- c("000041", "000047", "000057", "000058", "000059")
 
     for(aws in awsList){
         dirDAT <- file.path(dirDATBE, aws)
