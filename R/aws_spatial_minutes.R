@@ -146,8 +146,9 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
     # })
 
     parsL <- doparallel.cond(length(seqTime) > 200)
-    retLoop <- cdtforeach(seq_along(seqTime), parsL, FUN = function(tt){
-        awsList <- file.path(dirTMP, paste0(tt, '_', awsID))
+    retLoop <- cdtforeach(seq_along(seqTime), parsL, FUN = function(ii){
+        temps <- seqTime[ii]
+        awsList <- file.path(dirTMP, paste0(temps, '_', awsID))
         ifiles <- file.exists(awsList)
         if(!any(ifiles)) return(NULL)
         awsList <- awsList[ifiles]
@@ -155,8 +156,8 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
 
         awsSP <- lapply(awsList, readRDS)
         names(awsSP) <- awsIds
-        out <- list(date = tt, id = awsIds, data = awsSP)
-        saveRDS(out, file = file.path(dirOUT, paste0(tt, ".rds")))
+        out <- list(date = temps, id = awsIds, data = awsSP)
+        saveRDS(out, file = file.path(dirOUT, paste0(temps, ".rds")))
     })
 
     # unlink(dirTMP, recursive = TRUE)
