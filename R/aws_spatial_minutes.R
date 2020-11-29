@@ -98,52 +98,54 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
 
     #########
 
-    # parsL <- doparallel.cond(length(awsPath) > 20)
-    # retLoop <- cdtforeach(seq_along(awsPath), parsL, FUN = function(jj){
-    #     dat <- try(readRDS(awsPath[jj]), silent = TRUE)
-    #     if(inherits(dat, "try-error")) return(NULL)
+    parsL <- doparallel.cond(length(awsPath) > 20)
+    retLoop <- cdtforeach(seq_along(awsPath), parsL, FUN = function(jj){
+        dat <- try(readRDS(awsPath[jj]), silent = TRUE)
+        if(inherits(dat, "try-error")) return(NULL)
 
-    #     daty <- strptime(dat$date, "%Y%m%d%H%M%S", tz = tz)
-    #     idaty <- daty >= time1 & daty <= time2
-    #     if(!any(idaty)) return(NULL)
+        daty <- strptime(dat$date, "%Y%m%d%H%M%S", tz = tz)
+        idaty <- daty >= time1 & daty <= time2
+        if(!any(idaty)) return(NULL)
 
-    #     index <- index_min2min(dat$date[idaty], 10)
+        index <- index_min2min(dat$date[idaty], 10)
 
-    #     for(ii in seq_along(index)){
-    #         y <- lapply(dat$data, function(x){
-    #             x <- x[idaty, , drop = FALSE]
-    #             ix <- index[[ii]]
-    #             x <- x[ix, , drop = FALSE]
-    #             if(length(ix) > 1){
-    #                 nx <- names(x)
-    #                 res <- lapply(nx, function(n){
-    #                     foo <- switch(n, 'Tot' = sum, 'Min' = min,
-    #                                   'Max' = max, 'Ave' = mean, mean)
-    #                     y <- suppressWarnings(foo(x[[n]], na.rm = TRUE))
-    #                     y[is.nan(y) | is.infinite(y)] <- NA
-    #                     y
-    #                 })
-    #                 names(res) <- nx
+        for(ii in seq_along(index)){
+            y <- lapply(dat$data, function(x){
+                x <- x[idaty, , drop = FALSE]
+                ix <- index[[ii]]
+                x <- x[ix, , drop = FALSE]
+                if(length(ix) > 1){
+                    nx <- names(x)
+                    res <- lapply(nx, function(n){
+                        foo <- switch(n, 'Tot' = sum, 'Min' = min,
+                                      'Max' = max, 'Ave' = mean, mean)
+                        y <- suppressWarnings(foo(x[[n]], na.rm = TRUE))
+                        y[is.nan(y) | is.infinite(y)] <- NA
+                        y
+                    })
+                    names(res) <- nx
 
-    #                 x <- do.call(cbind.data.frame, res)
-    #             }
+                    x <- do.call(cbind.data.frame, res)
+                }
 
-    #             return(x)
-    #         })
+                return(x)
+            })
 
-    #         y <- lapply(y, function(x){
-    #             x <- x[, !is.na(x), drop = FALSE]
-    #             if(ncol(x) == 0) return(NULL)
-    #             as.list(x)
-    #         })
+            y <- lapply(y, function(x){
+                x <- x[, !is.na(x), drop = FALSE]
+                if(ncol(x) == 0) return(NULL)
+                as.list(x)
+            })
 
-    #         inull <- sapply(y, is.null)
-    #         if(all(inull)) next
-    #         y <- y[!inull]
-    #         fltmp <- file.path(dirTMP, paste0(names(index[ii]), '_', awsID[jj]))
-    #         saveRDS(y, file = fltmp)
-    #     }
-    # })
+            inull <- sapply(y, is.null)
+            if(all(inull)) next
+            y <- y[!inull]
+            fltmp <- file.path(dirTMP, paste0(names(index[ii]), '_', awsID[jj]))
+            saveRDS(y, file = fltmp)
+        }
+    })
+
+    #########
 
     parsL <- doparallel.cond(length(seqTime) > 200)
     retLoop <- cdtforeach(seq_along(seqTime), parsL, FUN = function(ii){
@@ -157,8 +159,9 @@ aws_spatial_10min <- function(start_time, end_time, dirAWS){
         awsSP <- lapply(awsList, readRDS)
         names(awsSP) <- awsIds
         out <- list(date = temps, id = awsIds, data = awsSP)
-        saveRDS(out, file = file.path(dirOUT, paste0(temps, ".rds")))
+        outfile <- file.path(dirOUT, paste0(temps, ".rds"))
+        saveRDS(out, file = outfile)
     })
 
-    # unlink(dirTMP, recursive = TRUE)
+    unlink(dirTMP, recursive = TRUE)
 }
