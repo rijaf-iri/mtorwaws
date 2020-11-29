@@ -113,7 +113,7 @@ aws_spatial_day <- function(start_date, end_date, dirAWS){
     for(tt in seqTime){
         awsList <- file.path(dirTMP, paste0(tt, '_', awsID))
         ifiles <- file.exists(awsList)
-        if(!any(ifiles)) return(NULL)
+        if(!any(ifiles)) next
         awsList <- awsList[ifiles]
         awsIds <- awsID[ifiles]
 

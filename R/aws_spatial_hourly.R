@@ -118,7 +118,7 @@ aws_spatial_hour <- function(start_time, end_time, dirAWS){
     for(tt in seqTime){
         awsList <- file.path(dirTMP, paste0(tt, '_', awsID))
         ifiles <- file.exists(awsList)
-        if(!any(ifiles)) return(NULL)
+        if(!any(ifiles)) next
         awsList <- awsList[ifiles]
         awsIds <- awsID[ifiles]
 
