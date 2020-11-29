@@ -22,6 +22,7 @@ aggregate2hourly <- function(dirAWS, netAWS, archive = FALSE){
         dir.create(dirHour, showWarnings = FALSE, recursive = TRUE)
 
     awsList <- list.files(dirMin, ".+\\.rds$")
+    awsList <- awsList[25:35]
 
     for(aws in awsList){
         info <- readRDS(file.path(dirInfo, aws))
