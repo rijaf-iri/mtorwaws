@@ -18,8 +18,8 @@ aws_spatial_minutes <- function(dirAWS){
     timeNow <- Sys.time()
     daty2 <- paste0(substr(format(timeNow, "%Y%m%d%H%M"), 1, 11), 0)
     daty2 <- strptime(daty2, "%Y%m%d%H%M", tz = tz)
-    ## operational last 12 hours
-    timeLast <- timeNow - 43200
+    ## operational last 6 hours
+    timeLast <- timeNow - 21600
     daty1 <- paste0(substr(format(timeLast, "%Y%m%d%H%M"), 1, 11), 0)
     daty1 <- strptime(daty1, "%Y%m%d%H%M", tz = tz)
 
