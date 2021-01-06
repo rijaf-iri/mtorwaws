@@ -426,3 +426,27 @@ downRainAccumulSP <- function(tstep, time, accumul, aws_dir){
 
     return(convCSV(don))
 }
+
+##########
+#' Compute hourly mean sea level pressure.
+#'
+#' Compute hourly mean sea level pressure
+#' 
+#' @param time target date.
+#' @param aws_dir full path to the directory of the AWS data.
+#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
+#' 
+#' @return CSV object
+#' 
+#' @export
+
+downMSLPHourly <- function(time, aws_dir){
+    don <- compute_mslp(time, aws_dir)
+
+    if(don$status == "ok"){
+        don <- don$data
+        don[is.na(don)] <- ""
+    }else don <- data.frame(status = "no.data")
+
+    return(convCSV(don))
+}

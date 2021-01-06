@@ -28,6 +28,7 @@ aws_data_aggregate_ids <- function(timestep, start_time, end_time, aws_ids, aws_
     end <- format(end, frmt)
 
     don <- lapply(aws_ids, function(aws){
+        if(is.null(crds[[aws]])) return(NULL)
         dat <- filterAWS_AggrData(timestep, crds[[aws]]$id, start,
                                   end, crds[[aws]]$AWSGroup, aws_dir)
         if(is.null(dat)) return(NULL)
@@ -71,6 +72,7 @@ aws_data_variables_ids <- function(start_time, end_time, variables, aws_ids, aws
 
     dirAWS <- file.path(aws_dir, "PROC", "TIMESERIES", "Minutes")
     don <- lapply(aws_ids, function(aws){
+        if(is.null(crds[[aws]])) return(NULL)
         fileAWS <- file.path(dirAWS, crds[[aws]]$AWSGroup, paste0(aws, ".rds"))
         readRDS(fileAWS)
     })

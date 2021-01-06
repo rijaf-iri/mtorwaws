@@ -288,6 +288,7 @@ defColorKeyOptions <- function(var.name, aws = TRUE, timestep = "minute",
                       "TT" = seq(6, 36, 3),
                       "RH" = seq(45, 100, 5),
                       "PR" = seq(750, 1025, 25),
+                      "MSL" = seq(850, 1100, 25),
                       "RG" = seq(0, 1100, 100),
                       "FF" = c(0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15)
                      )

@@ -25,6 +25,7 @@ export(readAWSStatus)
 
 export(displayMAP10min)
 export(displayMAPAggr)
+export(dispMapMSLPHourly)
 
 export(chartMinAWSData)
 export(chartAggrAWSData)
@@ -50,6 +51,7 @@ export(chartRainAccumulAWS)
 export(displayMAPRainAccumul)
 export(downRainAccumulTS)
 export(downRainAccumulSP)
+export(downMSLPHourly)
 
 export(displayQCMinutes)
 
