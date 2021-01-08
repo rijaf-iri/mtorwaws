@@ -66,4 +66,5 @@ export(aws_metadata)
 
 export(aws_data_aggregate_ids)
 export(aws_data_variables_ids)
+export(aws_hourly_precip_data)
 

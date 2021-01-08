@@ -16,6 +16,92 @@
 #' @export
 
 aws_data_aggregate_ids <- function(timestep, start_time, end_time, aws_ids, aws_dir){
+    out <- extract_aws_data_aggregate(
+                timestep, start_time, end_time, aws_ids, aws_dir
+            )
+
+    if(is.null(out))
+        out <- list(status = "no-data")
+
+    return(convJSON(out))
+}
+
+
+#' Get hourly precipitation data.
+#'
+#' Get hourly precipitation data for all AWS.
+#' 
+#' @param start_time start time, format "YYYY-mm-dd HH:00"
+#' @param end_time end time, format "YYYY-mm-dd HH:00"
+#' @param aws_dir full path to the directory of the AWS data.
+#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
+#' 
+#' @return a JSON object
+#' 
+#' @export
+
+aws_hourly_precip_data <- function(start_time, end_time, aws_dir){
+    timestep <- "hourly"
+    vars <- 'RR.Tot'
+    crds <- readCoordsAWS(aws_dir)
+    aws_ids <- crds$id
+    data <- extract_aws_data_aggregate(
+                timestep, start_time, end_time, aws_ids, aws_dir
+            )
+    if(is.null(data))
+        return(convJSON(list(status = "no-data")))
+
+    aws_crds <- lapply(data$info, function(x){
+        data.frame(id = x$id,
+                   longitude = as.numeric(x$longitude),
+                   latitude = as.numeric(x$latitude),
+                   stringsAsFactors = FALSE
+                  )
+    })
+    aws_crds <- do.call(rbind, aws_crds)
+
+    daty <- data$data[aws_crds$id][[1]]$date
+    rr <- lapply(data$data[aws_crds$id], function(x) x$data[[vars]])
+
+    inull <- sapply(rr, is.null)
+    if(all(inull)) return(NULL)
+    rr <- rr[!inull]
+    aws_crds <- aws_crds[!inull, , drop = FALSE]
+    rr <- do.call(cbind, rr)
+
+    out <- list(coords = aws_crds, date = daty, data = rr)
+    return(convJSON(out))
+}
+
+
+#' Get AWS minutes data.
+#'
+#' Get AWS variables for a list of AWS.
+#' 
+#' @param start_time start time, format "YYYY-mm-dd HH:MM"
+#' @param end_time end time, format "YYYY-mm-dd HH:MM"
+#' @param variables a vector of aws variables. Ex: c('RR', 'TT')
+#' @param aws_ids aws ids, a vector of aws id
+#'                 Example: c("301", "306", "10050037", "000003")
+#' @param aws_dir full path to the directory of the AWS data.
+#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
+#' 
+#' @return a JSON object
+#' 
+#' @export
+
+aws_data_variables_ids <- function(start_time, end_time, variables, aws_ids, aws_dir){
+    out <- extract_aws_data_minutes(
+                start_time, end_time, variables, aws_ids, aws_dir
+            )
+
+    if(is.null(out))
+        out <- list(status = "no-data")
+
+    return(convJSON(out))
+}
+
+extract_aws_data_aggregate <- function(timestep, start_time, end_time, aws_ids, aws_dir){
     crds <- readCoordsAWS(aws_dir)
     crds <- crds[crds$id %in% aws_ids, , drop = FALSE]
     crds <- split(crds, crds$id)
@@ -37,34 +123,17 @@ aws_data_aggregate_ids <- function(timestep, start_time, end_time, aws_ids, aws_
     })
 
     inull <- sapply(don, is.null)
-    if(all(inull)) 
-        return(convJSON(list(status = "no-data")))
+    if(all(inull))
+        return(NULL)
 
     don <- don[!inull]
     names(don) <- aws_ids[!inull]
     crds <- crds[aws_ids[!inull]]
 
-    out <- list(info = crds, data = don)
-    return(convJSON(out))
+    return(list(info = crds, data = don))
 }
 
-#' Get AWS minutes data.
-#'
-#' Get AWS variables for a list of AWS.
-#' 
-#' @param start_time start time, format "YYYY-mm-dd HH:MM"
-#' @param end_time end time, format "YYYY-mm-dd HH:MM"
-#' @param variables a vector of aws variables. Ex: c('RR', 'TT')
-#' @param aws_ids aws ids, a vector of aws id
-#'                 Example: c("301", "306", "10050037", "000003")
-#' @param aws_dir full path to the directory of the AWS data.
-#'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
-#' 
-#' @return a JSON object
-#' 
-#' @export
-
-aws_data_variables_ids <- function(start_time, end_time, variables, aws_ids, aws_dir){
+extract_aws_data_minutes <- function(start_time, end_time, variables, aws_ids, aws_dir){
     crds <- readCoordsAWS(aws_dir)
     crds <- crds[crds$id %in% aws_ids, , drop = FALSE]
     crds <- split(crds, crds$id)
@@ -98,13 +167,12 @@ aws_data_variables_ids <- function(start_time, end_time, variables, aws_ids, aws
     })
 
     inull <- sapply(don, is.null)
-    if(all(inull)) 
-        return(convJSON(list(status = "no-data")))
+    if(all(inull))
+        return(NULL)
 
     don <- don[!inull]
     names(don) <- aws_ids[!inull]
     crds <- crds[aws_ids[!inull]]
 
-    out <- list(info = crds, data = don)
-    return(convJSON(out))
+    return(list(info = crds, data = don))
 }
