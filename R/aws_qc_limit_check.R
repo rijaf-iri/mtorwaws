@@ -19,8 +19,12 @@ qc_limit_check <- function(dirAWS, netAWS){
     dirDATBE <- file.path(dirAWS, "RAW", netAWS, "DATA")
     dirQCBE <- file.path(dirAWS, "PROC", "QCOUT", "QC1")
     dirDATTS <- file.path(dirAWS, "PROC", "TIMESERIES", "Minutes", netAWS)
+    dirDATTS_fail <- file.path(dirAWS, "PROC", "TIMESERIES", "Minutes", "AWS-ERROR", netAWS)
+
     if(!dir.exists(dirDATTS))
         dir.create(dirDATTS, showWarnings = FALSE, recursive = TRUE)
+    if(!dir.exists(dirDATTS_fail))
+        dir.create(dirDATTS_fail, showWarnings = FALSE, recursive = TRUE)
     logQC <- file.path(dirQCBE, paste0(netAWS, "_LOG.txt"))
 
     timeNow <- Sys.time()
@@ -34,7 +38,18 @@ qc_limit_check <- function(dirAWS, netAWS){
 
         fileTS <- file.path(dirDATTS, paste0(aws, ".rds"))
         if(file.exists(fileTS)){
-            dataTS <- readRDS(fileTS)
+            dataTS <- try(readRDS(fileTS), silent = TRUE)
+            if(inherits(dataTS, "try-error")){ 
+                heure <- format(timeNow, "%Y%m%d%H")
+                fileTS_fail <- file.path(dirDATTS_fail, paste0(aws, "_", heure, ".rds"))
+                file.copy(fileTS, fileTS_fail, overwrite = TRUE)
+                unlink(fileTS)
+
+                msg <- paste(dataTS, "QC limit Check failed for", aws)
+                format_out_msg(msg, logQC)
+                next
+            }
+
             timeLast <- dataTS$date[length(dataTS$date)]
             timeLast <- strptime(timeLast, "%Y%m%d%H%M%S", tz = tz)
         }else{
@@ -124,8 +139,12 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
     dirDATBE <- file.path(dirAWS, "RAW", netAWS, "DATA")
     dirQCBE <- file.path(dirAWS, "PROC", "QCOUT", "QC1")
     dirDATTS <- file.path(dirAWS, "PROC", "TIMESERIES", "Minutes", netAWS)
+    dirDATTS_fail <- file.path(dirAWS, "PROC", "TIMESERIES", "Minutes", "AWS-ERROR", netAWS)
+
     if(!dir.exists(dirDATTS))
         dir.create(dirDATTS, showWarnings = FALSE, recursive = TRUE)
+    if(!dir.exists(dirDATTS_fail))
+        dir.create(dirDATTS_fail, showWarnings = FALSE, recursive = TRUE)
     logQC <- file.path(dirQCBE, paste0(netAWS, "_LOG.txt"))
 
     time1 <- strptime(start_time, "%Y-%m-%d %H:%M", tz = tz)
@@ -150,7 +169,18 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
         fileTS <- file.path(dirDATTS, paste0(aws, ".rds"))
         oldDATA <- FALSE
         if(file.exists(fileTS)){
-            dataTS <- readRDS(fileTS)
+            dataTS <- try(readRDS(fileTS), silent = TRUE)
+            if(inherits(dataTS, "try-error")){ 
+                heure <- format(time1, "%Y%m%d%H")
+                fileTS_fail <- file.path(dirDATTS_fail, paste0(aws, "_", heure, ".rds"))
+                file.copy(fileTS, fileTS_fail, overwrite = TRUE)
+                unlink(fileTS)
+
+                msg <- paste(dataTS, "QC limit Check failed for", aws)
+                format_out_msg(msg, logQC)
+                next
+            }
+
             oldDATA <- TRUE
         }
 
