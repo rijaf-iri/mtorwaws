@@ -27,11 +27,14 @@ aws_check_variables_ids <- function(start_time, end_time, aws_ids, variables, aw
     aws_paths <- file.path(aws_net$AWSGroup, 'DATA', aws_net$id)
     aws_paths <- sapply(aws_paths, function(x) file.path(x, pattern))
     pattern <- file.path(aws_dir, "RAW", aws_paths)
-    pattern <- paste('ls', pattern)
+    pattern <- paste('ls -f', pattern, '2>/dev/null')
 
-    ret_paths <- lapply(pattern, system, intern = TRUE)
-    
+    ret_paths <- suppressWarnings(lapply(pattern, system, intern = TRUE))
+
     ret_paths <- do.call(c, ret_paths)
+    if(length(ret_paths) == 0)
+        return(convJSON(list(status = "no-data")))
+
     tmp <- split_paths(ret_paths)
     tmp <- parse_aws_paths(tmp)
     tmp$file <- gsub('\\.rds', '', tmp$file)

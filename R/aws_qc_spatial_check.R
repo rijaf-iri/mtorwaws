@@ -33,7 +33,9 @@ qc_spatial_check <- function(start_time, end_time, dirAWS){
     for(tt in seqTime){
         aws_path <- file.path(dirDATBE, paste0(tt, ".rds"))
         if(!file.exists(aws_path)) next
-        aws <- readRDS(aws_path)
+        aws <- try(readRDS(aws_path), silent = TRUE)
+        if(inherits(aws, "try-error")) next
+
         ix <- match(aws$id, crds$id)
         ina <- !is.na(ix)
         ix <- ix[ina]

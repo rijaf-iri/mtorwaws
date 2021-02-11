@@ -29,13 +29,15 @@ aggregate2hourly <- function(dirAWS, netAWS, archive = FALSE){
         nbstep <- 60 / tstep
      
         file_mn <- file.path(dirMin, aws)
-        dat_mn <- readRDS(file_mn)
+        dat_mn <- try(readRDS(file_mn), silent = TRUE)
+        if(inherits(dat_mn, "try-error")) next
         daty <- strptime(dat_mn$date, "%Y%m%d%H%M%S", tz = tz)
 
         file_hr <- file.path(dirHour, aws)
 
         if(file.exists(file_hr)){
-            dat_hr <- readRDS(file_hr)
+            dat_hr <- try(readRDS(file_hr), silent = TRUE)
+            if(inherits(dat_hr, "try-error")) next
             nhr <- length(dat_hr$date)
 
             if(archive){

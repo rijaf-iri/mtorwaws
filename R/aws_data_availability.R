@@ -37,9 +37,9 @@ aws_data_availability_all <- function(start_time, end_time, aws_dir){
     pattern <- format(pattern, "%Y%m%d%H*.rds")
     pattern <- file.path('*', 'DATA', '*', pattern)
     pattern <- file.path(aws_dir, "RAW", pattern)
-    pattern <- paste('ls', pattern)
+    pattern <- paste('ls -f', pattern, '2>/dev/null')
 
-    ret_paths <- lapply(pattern, system, intern = TRUE)
+    ret_paths <- suppressWarnings(lapply(pattern, system, intern = TRUE))
 
     ret_paths <- lapply(ret_paths, split_paths)
     ret_paths <- lapply(ret_paths, parse_aws_paths)
@@ -87,9 +87,9 @@ aws_data_availability_net <- function(start_time, end_time, aws_net, aws_dir){
     pattern <- format(pattern, "%Y%m%d%H*.rds")
     pattern <- file.path(aws_net, 'DATA', '*', pattern)
     pattern <- file.path(aws_dir, "RAW", pattern)
-    pattern <- paste('ls', pattern)
+    pattern <- paste('ls -f', pattern, '2>/dev/null')
 
-    ret_paths <- lapply(pattern, system, intern = TRUE)
+    ret_paths <- suppressWarnings(lapply(pattern, system, intern = TRUE))
 
     ret_paths <- lapply(ret_paths, split_paths)
     ret_paths <- lapply(ret_paths, parse_aws_paths)
@@ -138,7 +138,7 @@ aws_data_availability_ids <- function(start_time, end_time, aws_ids, aws_dir){
     aws_paths <- file.path(aws_net$AWSGroup, 'DATA', aws_net$id)
     aws_paths <- sapply(aws_paths, function(x) file.path(x, pattern))
     pattern <- file.path(aws_dir, "RAW", aws_paths)
-    pattern <- paste('ls', pattern, '2>/dev/null')
+    pattern <- paste('ls -f', pattern, '2>/dev/null')
 
     ret_paths <- suppressWarnings(lapply(pattern, system, intern = TRUE))
 
