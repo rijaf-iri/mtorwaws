@@ -137,7 +137,8 @@ readAWSInfo <- function(aws, aws_net, aws_dir){
 #'
 #' Get AWS Status data to display on map.
 #' 
-#' @param hour an integer, the last hour to display.
+#' @param ltime character, the last time duration to display. Options are, "01h", "03h", "06h", 
+#' "12h", "24h", "02d", "03d", "05d", "01w", "02w", "03w", "01m".
 #' @param aws_dir full path to the directory of the AWS data.
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
@@ -145,15 +146,21 @@ readAWSInfo <- function(aws, aws_net, aws_dir){
 #' 
 #' @export
 
-readAWSStatus <- function(hour, aws_dir){
+readAWSStatus <- function(ltime, aws_dir){
     file_stat <- file.path(aws_dir, "STATUS", "aws_status.rds")
     aws <- readRDS(file_stat)
-    hour <- as.numeric(hour)
+    vtime <- as.numeric(substr(ltime, 1, 2))
+    ttime <- substr(ltime, 3, 3)
+    hmul <- switch(ttime, "h" = 1, "d" = 24, "w" = 168, "m" = 720)
+    hour <- vtime * hmul
     if(hour > 1){
-        ic <- (24 - hour + 1):24
+        ic <- (720 - hour + 1):720
         stat <- aws$status[, ic]
         stat <- rowMeans(stat, na.rm = TRUE)
-    }else stat <- aws$status[, 24]
+    }else{
+        nc <- ncol(aws$status)
+        stat <- aws$status[, nc]
+    }
 
     crds <- aws$coords
     crds$Availability <- paste(round(stat, 1), "%")

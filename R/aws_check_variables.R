@@ -39,7 +39,7 @@ aws_check_variables_ids <- function(start_time, end_time, aws_ids, variables, aw
     tmp <- parse_aws_paths(tmp)
     tmp$file <- gsub('\\.rds', '', tmp$file)
     daty <- strptime(tmp$file, "%Y%m%d%H%M%S", tz = "Africa/Kigali")
-    
+
     ix <- daty >= start & daty <= end
     tmp <- tmp[ix, , drop = FALSE]
     ret_paths <- ret_paths[ix]
@@ -63,6 +63,20 @@ aws_check_variables_ids <- function(start_time, end_time, aws_ids, variables, aw
     crds <- crds[crds$id %in% aws_id, , drop = FALSE]
     crds <- split(crds, crds$id)
     crds <- lapply(crds, as.list)
+
+    nom <- names(tmp)
+    tmp <- lapply(nom, function(n){
+        vr <- variables %in% crds[[n]]$PARS[[1]]
+        if(!any(vr)) return(NULL)
+        tmp[[n]][, c(TRUE, vr), drop = FALSE]
+    })
+    inull <- sapply(tmp, is.null)
+    if(all(inull))
+        return(convJSON(list(status = "no-data")))
+
+    tmp <- tmp[!inull]
+    names(tmp) <- nom[!inull]
+    crds <- crds[!inull]
 
     out <- list(info = crds, data = tmp)
     return(convJSON(out))
