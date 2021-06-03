@@ -11,7 +11,7 @@ aws_data_availability_all(start_time, end_time, aws_dir)
 
 \item{end_time}{end time, format "YYYY-mm-dd HH:MM"}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

@@ -3,7 +3,7 @@
 #'
 #' Get AWS metadat.
 #' 
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

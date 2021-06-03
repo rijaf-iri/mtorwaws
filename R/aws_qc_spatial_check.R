@@ -3,10 +3,10 @@
 #'
 #' Perform quality control using spatial check method at hourly time step.
 #'
-#' @param start_time the start time to process, format "YYYY-MM-DD HH:00".
+#' @param start_time the start time to process, format "YYYY-MM-DD HH:00".\cr
 #'                  Example: "2019-12-15 12:00"
 #' @param end_time  the end time to process, format "YYYY-MM-DD HH:00"
-#' @param dirAWS full path to the directory of the parsed data.
+#' @param dirAWS full path to the directory of the parsed data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export

@@ -7,12 +7,12 @@
 aws_spatial_daily_arch(start_date, end_date, dirAWS)
 }
 \arguments{
-\item{start_date}{the start date to process in the format "YYYY-MM-DD".
+\item{start_date}{the start date to process in the format "YYYY-MM-DD".\cr
 Example: "2019-12-15"}
 
 \item{end_date}{the end date to process in the format "YYYY-MM-DD"}
 
-\item{dirAWS}{full path to the directory of the AWS data.
+\item{dirAWS}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \description{

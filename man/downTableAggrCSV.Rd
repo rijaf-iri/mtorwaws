@@ -17,7 +17,7 @@ downTableAggrCSV(tstep, aws, start, end, aws_net, aws_dir)
 
 \item{aws_net}{AWS network.}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

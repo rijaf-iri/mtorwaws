@@ -13,7 +13,7 @@ downRainAccumulSP(tstep, time, accumul, aws_dir)
 
 \item{accumul}{accumulation duration.}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

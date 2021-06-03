@@ -9,7 +9,7 @@ displayMAP10min(time, aws_dir)
 \arguments{
 \item{time}{the time to display in the format "YYYY-MM-DD-HH-MM".}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

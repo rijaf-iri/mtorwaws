@@ -1,12 +1,17 @@
 
-#' Process LSI-ELOG data.
+#' Check the latest available AWS data.
 #'
-#' Get the data from Gidas database, parse and convert to a list object then upload it to "data-int" server.
+#' Function to check the time of the latest available data for all AWS.
 #' 
-#' @param dirAWS full path to the directory to store the parsed data.
+#' @param dirAWS full path to the directory containing the AWS network folder \strong{"LSI-ELOG"}, \strong{"LSI-XLOG"}, \strong{"REMA"}.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA/RAW"
 #' 
-#' @return a data.frame
+#' @return a data.frame with columns:
+#' \itemize{ 
+#' \item{\strong{Network}: }{the AWS network}
+#' \item{\strong{ID}: }{the AWS ID}
+#' \item{\strong{Last_Data}: }{the time of the last available data}
+#' }
 #' 
 #' @export
 

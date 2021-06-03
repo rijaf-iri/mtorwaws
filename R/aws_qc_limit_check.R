@@ -3,7 +3,7 @@
 #'
 #' Perform quality control using limit check method at AWS time step.
 #' 
-#' @param dirAWS full path to the directory of the parsed data.
+#' @param dirAWS full path to the directory of the parsed data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' @param netAWS the name of the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA".
 #' 
@@ -121,10 +121,10 @@ qc_limit_check <- function(dirAWS, netAWS){
 #'
 #' Perform quality control using limit check method at AWS time step.
 #'
-#' @param start_time the start time to process in the format "YYYY-MM-DD HH:MM".
+#' @param start_time the start time to process in the format "YYYY-MM-DD HH:MM".\cr
 #'                  Example: "2019-12-15 12:50"
 #' @param end_time  the end time to process in the format "YYYY-MM-DD HH:MM"
-#' @param dirAWS full path to the directory of the parsed data.
+#' @param dirAWS full path to the directory of the parsed data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' @param netAWS the name of the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA".
 #' 
@@ -195,6 +195,9 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
             format_out_msg(msg, logQC)
             next
         }
+
+        inull <- sapply(qcdata, is.null)
+        qcdata <- qcdata[!inull]
         qcdata <- convertAWSList2DF(qcdata)
 
         if(netAWS == "REMA"){
@@ -226,7 +229,9 @@ qc_limit_check_arch <- function(start_time, end_time, dirAWS, netAWS){
 
 awsQCLimitCheck <- function(fileList, dirDAT, dirQC, qcLimPars){
     retqc <- lapply(fileList, function(f){
-        x <- readRDS(file.path(dirDAT, f))
+        x <- try(readRDS(file.path(dirDAT, f)), silent = TRUE)
+        if(inherits(x, "try-error")) return(NULL)
+        
         nom <- names(x$data)
 
         qcout <- lapply(seq_along(x$data), function(j){

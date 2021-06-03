@@ -7,12 +7,12 @@
 qc_limit_check_arch(start_time, end_time, dirAWS, netAWS)
 }
 \arguments{
-\item{start_time}{the start time to process in the format "YYYY-MM-DD HH:MM".
+\item{start_time}{the start time to process in the format "YYYY-MM-DD HH:MM".\cr
 Example: "2019-12-15 12:50"}
 
 \item{end_time}{the end time to process in the format "YYYY-MM-DD HH:MM"}
 
-\item{dirAWS}{full path to the directory of the parsed data.
+\item{dirAWS}{full path to the directory of the parsed data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 
 \item{netAWS}{the name of the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA".}

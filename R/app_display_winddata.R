@@ -6,7 +6,7 @@
 #' @param aws AWS ID.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -53,7 +53,7 @@ dispWindBarb <- function(tstep, aws, start, end, aws_dir){
 #' @param aws AWS ID.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -74,7 +74,7 @@ dispWindRose <- function(tstep, aws, start, end, aws_dir){
 #' @param aws AWS ID.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return Png image
@@ -109,7 +109,7 @@ openairWindrose <- function(tstep, aws, start, end, aws_dir){
 #' @param start start time.
 #' @param end end time.
 #' @param centre center of the image, N, W, S, E.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object

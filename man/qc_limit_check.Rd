@@ -7,7 +7,7 @@
 qc_limit_check(dirAWS, netAWS)
 }
 \arguments{
-\item{dirAWS}{full path to the directory of the parsed data.
+\item{dirAWS}{full path to the directory of the parsed data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 
 \item{netAWS}{the name of the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA".}

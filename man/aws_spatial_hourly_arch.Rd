@@ -7,12 +7,12 @@
 aws_spatial_hourly_arch(start_time, end_time, dirAWS)
 }
 \arguments{
-\item{start_time}{the start time to process in the format "YYYY-MM-DD HH:00".
+\item{start_time}{the start time to process in the format "YYYY-MM-DD HH:00".\cr
 Example: "2019-12-15 12:00"}
 
 \item{end_time}{the end time to process in the format "YYYY-MM-DD HH:00"}
 
-\item{dirAWS}{full path to the directory of the AWS data.
+\item{dirAWS}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \description{

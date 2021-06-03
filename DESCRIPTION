@@ -1,10 +1,13 @@
 Package: mtorwaws
 Version: 2.0
 Title: Processing AWS data from Meteo Rwanda
-Description: Processing AWS data from Meteo Rwanda.
+Description: process AWS data from LSI server, perform a quality check at the time step of
+    the AWS and a spatial check at hourly time scale, aggregate AWS data to a different time 
+    scale, analyze the processed AWS data and handle users request from MeteoRwanda Data 
+    Processing System (MDPS) API.
 Author: Rija Faniriantsoa <rijaf@iri.columbia.edu>
 Maintainer: Rija Faniriantsoa <rijaf@iri.columbia.com>
-License: GPL (>= 2)
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no

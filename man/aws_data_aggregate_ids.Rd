@@ -13,10 +13,10 @@ aws_data_aggregate_ids(timestep, start_time, end_time, aws_ids, aws_dir)
 
 \item{end_time}{end time, format "YYYY-mm-dd HH:00"}
 
-\item{aws_ids}{aws ids, a vector of aws id
+\item{aws_ids}{aws ids, a vector of aws id.\cr
 Example: c("301", "306", "10050037", "000003")}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

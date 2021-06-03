@@ -6,7 +6,7 @@
 #' @param logtype type of log files: "logperaws", "logproc" or "logupload".
 #' @param date date to read.
 #' @param aws_net AWS network: "REMA", "LSI-XLOG" or "LSI-ELOG".
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return JSON object

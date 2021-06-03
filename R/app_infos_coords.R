@@ -3,7 +3,7 @@
 #'
 #' Read AWS coordinates.
 #' 
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -21,7 +21,7 @@ readCoords <- function(aws_dir){
 #'
 #' Get AWS coordinates to display on map.
 #' 
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -79,7 +79,7 @@ readCoordsMap <- function(aws_dir){
 #'
 #' Get AWS Wind coordinates to display on map.
 #' 
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -104,7 +104,7 @@ readAWSWind <- function(aws_dir){
 #'
 #' @param aws the AWS ID
 #' @param aws_net the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA". 
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -139,7 +139,7 @@ readAWSInfo <- function(aws, aws_net, aws_dir){
 #' 
 #' @param ltime character, the last time duration to display. Options are, "01h", "03h", "06h", 
 #' "12h", "24h", "02d", "03d", "05d", "01w", "02w", "03w", "01m".
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

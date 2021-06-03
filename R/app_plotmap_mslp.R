@@ -4,7 +4,7 @@
 #' Compute hourly mean sea level pressure data to display on map.
 #' 
 #' @param time the time to display in the format "YYYY-MM-DD-HH"
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

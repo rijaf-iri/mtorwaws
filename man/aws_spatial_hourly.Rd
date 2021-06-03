@@ -7,7 +7,7 @@
 aws_spatial_hourly(dirAWS)
 }
 \arguments{
-\item{dirAWS}{full path to the directory of the AWS data.
+\item{dirAWS}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \description{

@@ -2,17 +2,22 @@
 % Please edit documentation in R/aws_last_update.R
 \name{check_aws_last_update}
 \alias{check_aws_last_update}
-\title{Process LSI-ELOG data.}
+\title{Check the latest available AWS data.}
 \usage{
 check_aws_last_update(dirAWS)
 }
 \arguments{
-\item{dirAWS}{full path to the directory to store the parsed data.
+\item{dirAWS}{full path to the directory containing the AWS network folder \strong{"LSI-ELOG"}, \strong{"LSI-XLOG"}, \strong{"REMA"}.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA/RAW"}
 }
 \value{
-a data.frame
+a data.frame with columns:
+\itemize{ 
+\item{\strong{Network}: }{the AWS network}
+\item{\strong{ID}: }{the AWS ID}
+\item{\strong{Last_Data}: }{the time of the last available data}
+}
 }
 \description{
-Get the data from Gidas database, parse and convert to a list object then upload it to "data-int" server.
+Function to check the time of the latest available data for all AWS.
 }

@@ -3,7 +3,7 @@
 #'
 #' Create hourly spatial data.
 #' 
-#' @param dirAWS full path to the directory of the AWS data.
+#' @param dirAWS full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export
@@ -46,10 +46,10 @@ aws_spatial_hourly <- function(dirAWS){
 #'
 #' Create hourly spatial data archive mode.
 #'
-#' @param start_time the start time to process in the format "YYYY-MM-DD HH:00".
+#' @param start_time the start time to process in the format "YYYY-MM-DD HH:00".\cr
 #'                  Example: "2019-12-15 12:00"
 #' @param end_time  the end time to process in the format "YYYY-MM-DD HH:00"
-#' @param dirAWS full path to the directory of the AWS data.
+#' @param dirAWS full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export

@@ -10,7 +10,7 @@ readAWSStatus(ltime, aws_dir)
 \item{ltime}{character, the last time duration to display. Options are, "01h", "03h", "06h", 
 "12h", "24h", "02d", "03d", "05d", "01w", "02w", "03w", "01m".}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

@@ -8,7 +8,7 @@
 #' @param aws_ids aws ids, a vector of aws id
 #'                 Example: c("301", "306", "10050037", "000003")
 #' @param variables a vector of aws variables. Ex: c('RR', 'TT')
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

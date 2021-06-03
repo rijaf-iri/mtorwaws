@@ -16,7 +16,7 @@ aws_data_variables_ids(start_time, end_time, variables, aws_ids, aws_dir)
 \item{aws_ids}{aws ids, a vector of aws id
 Example: c("301", "306", "10050037", "000003")}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

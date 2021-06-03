@@ -6,9 +6,9 @@
 #' @param timestep time step of the data, "hourly", "daily", "pentad", "dekadal" or "monthly"
 #' @param start_time start time, format "YYYY-mm-dd HH:00"
 #' @param end_time end time, format "YYYY-mm-dd HH:00"
-#' @param aws_ids aws ids, a vector of aws id
+#' @param aws_ids aws ids, a vector of aws id.\cr
 #'                 Example: c("301", "306", "10050037", "000003")
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -33,7 +33,7 @@ aws_data_aggregate_ids <- function(timestep, start_time, end_time, aws_ids, aws_
 #' 
 #' @param start_time start time, format "YYYY-mm-dd HH:00"
 #' @param end_time end time, format "YYYY-mm-dd HH:00"
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -83,7 +83,7 @@ aws_hourly_precip_data <- function(start_time, end_time, aws_dir){
 #' @param variables a vector of aws variables. Ex: c('RR', 'TT')
 #' @param aws_ids aws ids, a vector of aws id
 #'                 Example: c("301", "306", "10050037", "000003")
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

@@ -9,7 +9,7 @@
 #' @param end end time.
 #' @param plotrange get range.
 #' @param aws_net AWS network.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -120,7 +120,7 @@ chartMinAWSData <- function(aws, vars, pars, start, end,
 #' @param end end date.
 #' @param plotrange get range.
 #' @param aws_net AWS network.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -205,7 +205,7 @@ chartAggrAWSData <- function(tstep, aws, vars, pars, start,
 #' @param start start date.
 #' @param end end date.
 #' @param aws_net AWS network.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -242,7 +242,7 @@ displayTableAgrrAWS <- function(tstep, aws, start, end, aws_net, aws_dir){
 #' @param pars parameters.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -303,7 +303,7 @@ chartAggrAWSDataSel <- function(tstep, aws, vars, pars, start, end, aws_dir){
 #' @param pars parameters.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

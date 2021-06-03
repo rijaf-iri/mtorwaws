@@ -8,7 +8,7 @@
 #' @param start start date.
 #' @param end end date.
 #' @param accumul accumulation duration.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -48,7 +48,7 @@ chartRainAccumulAWS <- function(tstep, aws, start, end, accumul, aws_dir)
 #' @param tstep time basis to accumulate the data.
 #' @param time target date.
 #' @param accumul accumulation duration.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

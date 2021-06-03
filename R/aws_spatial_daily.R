@@ -3,7 +3,7 @@
 #'
 #' Create daily spatial data.
 #' 
-#' @param dirAWS full path to the directory of the AWS data.
+#' @param dirAWS full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export
@@ -42,10 +42,10 @@ aws_spatial_daily <- function(dirAWS){
 #'
 #' Create daily spatial data archive mode.
 #'
-#' @param start_date the start date to process in the format "YYYY-MM-DD".
+#' @param start_date the start date to process in the format "YYYY-MM-DD".\cr
 #'                  Example: "2019-12-15"
 #' @param end_date  the end date to process in the format "YYYY-MM-DD"
-#' @param dirAWS full path to the directory of the AWS data.
+#' @param dirAWS full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export

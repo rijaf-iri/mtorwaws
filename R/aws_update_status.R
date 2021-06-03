@@ -3,7 +3,7 @@
 #'
 #' Update AWS data availability every hour.
 #' 
-#' @param dirAWS full path to the directory of the AWS data.
+#' @param dirAWS full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @export

@@ -17,7 +17,7 @@ dispWindContours(tstep, aws, start, end, centre, aws_dir)
 
 \item{centre}{center of the image, N, W, S, E.}
 
-\item{aws_dir}{full path to the directory of the AWS data.
+\item{aws_dir}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 }
 \value{

@@ -4,7 +4,7 @@
 #' Get AWS 10 minutes spatial data to display on map.
 #' 
 #' @param time the time to display in the format "YYYY-MM-DD-HH-MM".
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object
@@ -112,7 +112,7 @@ displayMAP10min <- function(time, aws_dir){
 #'              pentad: "YYYY-MM-DD",
 #'              dekadal: "YYYY-MM-DD",
 #'              monthly: "YYYY-MM"
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return a JSON object

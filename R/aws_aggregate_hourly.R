@@ -3,7 +3,7 @@
 #'
 #' Aggregate AWS data to hourly.
 #' 
-#' @param dirAWS full path to the directory of the AWS data.
+#' @param dirAWS full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' @param netAWS the name of the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA".
 #' @param archive TRUE for archive mode.

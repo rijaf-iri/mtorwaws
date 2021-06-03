@@ -7,7 +7,7 @@
 #' @param start start time.
 #' @param end end time.
 #' @param aws_net AWS network.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV format object
@@ -48,7 +48,7 @@ downAWSMinDataCSV <- function(aws, vars, start, end, aws_net, aws_dir)
 #' @param start start date.
 #' @param end end date.
 #' @param aws_net AWS network.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV format object
@@ -85,7 +85,7 @@ downTableAggrCSV <- function(tstep, aws, start, end, aws_net, aws_dir){
 #' @param pars parameters.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV format object
@@ -139,7 +139,7 @@ downTableAggrDataSelCSV <- function(tstep, aws, vars, pars, start, end, aws_dir)
 #' @param start start date.
 #' @param end end date.
 #' @param aws_net AWS network.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV format object
@@ -189,7 +189,7 @@ downAWSAggrOneVarCSV <- function(tstep, aws, vars, start, end, aws_net, aws_dir)
 #' @param pars parameter.
 #' @param start start date.
 #' @param end end date.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -271,7 +271,7 @@ downAWSAggrCDTDataCSV <- function(tstep, vars, pars, start, end, aws_dir)
 #' @param start start date.
 #' @param end end date.
 #' @param accumul accumulation duration.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -301,7 +301,7 @@ downRainAccumulTS <- function(tstep, aws, start, end, accumul, aws_dir){
 #' @param aws AWS ID.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -328,7 +328,7 @@ downWindBarbCSV <- function(tstep, aws, start, end, aws_dir){
 #' @param aws AWS ID.
 #' @param start start time.
 #' @param end end time.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -356,7 +356,7 @@ donwWindFreqCSV <- function(tstep, aws, start, end, aws_dir){
 #' Get AWS 10 minutes spatial data for download.
 #' 
 #' @param time the time to download in the format "YYYY-MM-DD-HH-MM".
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -385,7 +385,7 @@ downAWS10MinSpCSV <- function(time, aws_dir){
 #'              pentad: "YYYY-MM-DD",
 #'              dekadal: "YYYY-MM-DD",
 #'              monthly: "YYYY-MM"
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -410,7 +410,7 @@ downAWSAggrSpCSV <- function(tstep, time, aws_dir){
 #' @param tstep time basis to accumulate the data.
 #' @param time target date.
 #' @param accumul accumulation duration.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object
@@ -433,7 +433,7 @@ downRainAccumulSP <- function(tstep, time, accumul, aws_dir){
 #' Compute hourly mean sea level pressure
 #' 
 #' @param time target date.
-#' @param aws_dir full path to the directory of the AWS data.
+#' @param aws_dir full path to the directory of the AWS data.\cr
 #'               Example: "/home/data/MeteoRwanda_Data/AWS_DATA"
 #' 
 #' @return CSV object

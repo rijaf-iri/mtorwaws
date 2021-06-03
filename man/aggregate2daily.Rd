@@ -7,7 +7,7 @@
 aggregate2daily(dirAWS, netAWS, obs_hour = 8, archive = FALSE)
 }
 \arguments{
-\item{dirAWS}{full path to the directory of the AWS data.
+\item{dirAWS}{full path to the directory of the AWS data.\cr
 Example: "/home/data/MeteoRwanda_Data/AWS_DATA"}
 
 \item{netAWS}{the name of the AWS network, "LSI-ELOG", "LSI-XLOG" or "REMA".}
