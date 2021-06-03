@@ -88,6 +88,9 @@ qc_limit_check <- function(dirAWS, netAWS){
             format_out_msg(msg, logQC)
             next
         }
+
+        inull <- sapply(qcdata, is.null)
+        qcdata <- qcdata[!inull]
         qcdata <- convertAWSList2DF(qcdata)
 
         if(netAWS == "REMA"){
